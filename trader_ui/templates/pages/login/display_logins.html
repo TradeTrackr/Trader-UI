@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block meta %}
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+
+
+<div style="margin-top:70px;">
+
+    <div class="row">
+      <div class="col-sm-12">
+
+      {% if error == "error-password-username" %}
+      <div class="alert alert-danger">
+        <strong>Error!</strong> Wrong username or password combination
+      </div><br>
+      {% elif error == "error-wrong-url" %}
+      <div class="alert alert-danger">
+        <strong>Error!</strong> Wrong url used to access this system, please contact your administrator and try again
+      </div><br>
+      {% elif error == "email-error" %}
+      <div class="alert alert-danger">
+        <strong>Error!</strong> Email already exists
+      </div><br>
+      {% elif error == "password-error" %}
+      <div class="alert alert-danger">
+        <strong>Error!</strong> Passwords don't match
+      </div>
+      {% elif error == "reset-pass-not-sent" %}
+      <div class="alert alert-danger">
+        <strong>Error!</strong> Reset passwod link not sent
+      </div><br>
+      {% elif error == "reset-pass-sent" %}
+      <div class="alert alert-info">
+        <strong>Success!</strong> We have sent you an email – please follow the instructions within it to reset your password. Please note that the link will expire after ten days.
+      <b>If you don’t receive an email from us in the next few minutes please check your spam or junk folders.</b>
+      </div><br>
+      {% elif error == "mew-pass-set" %}
+      <div class="alert alert-info">
+        <strong>Info!</strong> New password has been set, you can now login
+      </div><br>
+      {% else %}
+
+      {% endif %}
+      </div>
+    </div>
+
+      <div class="row">
+
+      <div class="text-center">
+
+        <img class="img-logo img-responsive" src="#" id="logo">
+
+      </div>
+    </div>
+
+      <br>
+
+    <!-- Outer Row -->
+    <div class="row">
+
+      <div class="col-xl-12 col-lg-12 col-md-12">
+
+        <div class="card o-hidden border-0 shadow-lg my-5">
+          <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+              <div class="col-lg-3"></div>
+              <div class="col-lg-6">
+                <div class="p-5">
+                  <br>
+                  <div class="text-center">
+                    <h1 class="h2 text-gray-900 mb-4">Welcome Back!</h1>
+                  </div>
+                  <br>
+                  <form action="./login/validate_login" id="login" method="post">
+                    <div class="form-group">
+                      <input style="font-size: 12px;" type="email" name="email"  class="form-control form-control-user" id="email" aria-describedby="emailHelp" placeholder="Enter Email Address...">
+                    </div>
+                    <div class="form-group">
+
+                      <input style="font-size: 12px;"type="password" name="password"  class="form-control form-control-user" id="password" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+
+                  <label class="csstext">  <input type="checkbox" onclick="unhidepassword()"> Show Password  </label>
+                      </div>
+                    <div class="form-group">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" name="keep_me_logged_in" id="customCheck">
+                        <label style="font-size: 12px;" class="custom-control-label" for="customCheck">Remember Me</label>
+                      </div>
+                    </div>
+                  <button type="submit"class="btn btn-primary btn-user btn-block">
+
+                      <h4>Login</h4>
+                    </button>
+                  </form>
+                  <div class="text-center">
+                    <a href="./login/reset_pass">Forgot Password?</a>
+                  </div>
+                  <hr>
+                  <div class="text-center">
+                    <a href="https://opti-stack.co.uk/client_terms.php" >Terms and Conditions</a>
+                  </div>
+                  <div class="text-center">
+                    <a   href="https://opti-stack.co.uk/privacy_policy.php" >Privacy Policy</a>
+                  </div>
+                  <hr>
+                  <div class="text-center" class="small">
+                    By using our system you agree to accept our </br><a href="https://opti-stack.co.uk/cookies.php">Cookie Policy</a>
+                  </div>
+                  <br>
+                </div>
+              </div>
+              <div class="col-lg-3"></div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+    <script>
+
+    function unhidepassword() {
+      var x = document.getElementById("password");
+      if (x.type === "password") {
+        x.type = "text";
+      } else {
+        x.type = "password";
+      }
+    }
+    </script>
+
+
+
+
+
+{% endblock %}
+
+{% block script %}
+{% endblock %}
