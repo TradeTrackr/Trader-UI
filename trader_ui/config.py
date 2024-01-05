@@ -1,29 +1,12 @@
 import os
 
+SECRET_KEY = os.environ["SECRET_KEY"]
+
 class Config:
-
-    def convert_to_bool(value):
-        if value == "True":
-            return True
-        elif value == "False":
-            return False
-
-    ALLOW_HTTPS_TRAFFIC_ONLY = convert_to_bool(
-        os.environ.get("ALLOW_HTTPS_TRAFFIC_ONLY", "True")
-    )
-
-    APP_NAME = os.environ["APP_NAME"]
-    SECRET_KEY = os.environ["SECRET_KEY"]
-    password_photo = os.environ["password_photo"]
-    reset_photo = os.environ["reset_photo"]
-    login_photo = os.environ["login_photo"]
-    SESSION_COOKIE_SECURE = convert_to_bool(os.environ["SESSION_COOKIE_SECURE"])
-    REMEMBER_COOKIE_SECURE = convert_to_bool(os.environ["REMEMBER_COOKIE_SECURE"])
-
-    # APIs
-    LOGIN_API_URL = os.environ["LOGIN_API_URL"]
-    CDN_URL = os.environ["CDN_URL"]
-    ACCOUNT_API_URL = os.environ["ACCOUNT_API_URL"]
+    LOGIN_API_ENDPOINT = os.environ["LOGIN_API_ENDPOINT"]
+    ACCOUNT_API_ENDPOINT = os.environ["ACCOUNT_API_ENDPOINT"]
+    ENQUIRY_API_ENDPOINT = os.environ["ENQUIRY_API_ENDPOINT"]
+    CDN_URL = os.environ['CDN_URL']
 
     # For logging
     FLASK_LOG_LEVEL = os.environ["FLASK_LOG_LEVEL"]

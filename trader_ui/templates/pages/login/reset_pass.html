@@ -7,78 +7,59 @@
 {% endblock %}
 
 {% block content %}
+<body style="background-color: #9A616D;">
+  <div class="container">
 
+  <!--Main layout-->
+  <main >
+    <div class="container pt-4">
+      <!-- Section: Main chart -->
+      <section class="vh-100" style="background-color: #9A616D;">
+        <div class="container py-5 h-100">
+          <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col col-xl-10">
+              <div class="card" style="border-radius: 1rem;border-radius: 1rem;height:550px!important;">
+                <div class="row g-0">
+                  <div class="col-md-6 col-lg-5 d-none d-md-block">
+                    <img src="/static/images/login-photo.jpg"
+                      alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
+                  </div>
+                  <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                    <div class="card-body p-4 p-lg-5 text-black">
+                      <div class="d-flex align-items-center mb-3 pb-1">
+                        <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
+                        <span class="h1 fw-bold mb-0">TradeTrakr</span>
+                      </div>
+                      <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Forgot Your Password?</h5>
+                          <p >Just enter your email address below and we'll send you a link to reset your password!</p>
+                        <br>
+                        <form action="./login/reset_pass" id="reset-pass" method="POST">
 
-<div style="margin-top:70px;">
+                          <div class="form-outline mb-4">
+                            <input type="email" name="email" id="emailaddress" class="form-control form-control-lg" />
+                            <label class="form-label" for="emailaddress">Email address</label>
+                          </div>
 
-<!-- Outer Row -->
-  <div class="row" >
-    <div class="col-sm-12">
-
-    {% if error == "reset-pass-not-sent" %}
-    <div class="alert alert-danger">
-      <strong>Error!</strong> There is no account linked to this email address, please try again.
-    </div><br>
-    {% endif %}
-  </div>
-</div>
-
-  <div class="row" >
-
-    <div class="text-center">
-
-      <img class="img-logo img-responsive" src="#" id="logo">
-    </div>
-
-    </div>
-    <br>
-    <div class="row" >
-
-    <div class="col-xl-12 col-lg-12 col-md-12">
-
-    <div class="card o-hidden border-0 shadow-lg my-5">
-      <div class="card-body p-0">
-        <!-- Nested Row within Card Body -->
-        <div class="row">
-          <div class="col-lg-6 d-none d-lg-block bg-reset-image"></div>
-          <div class="col-lg-6">
-            <div class="p-5">
-              <br>
-              <div class="text-center">
-                <h1 class="h2 text-gray-900 mb-2">Forgot Your Password?</h1><br><br>
-                <h4 class="mb-4">We get it, stuff happens. Just enter your email address below and we'll send you a link to reset your password!</h4>
-              </div>
-              <br>
-              <form action="./login/reset_pass" id="reset-pass" method="POST">
-                <div class="form-group">
-                  <input style="font-size: 12px;"type="email" name="email"class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
+                            <div class="pt-1 mb-4">
+                              <button class="btn btn-dark btn-lg btn-block" type="button">Reset Password</button>
+                            </div>
+                        </form>
+                        <hr>
+                        <br>
+                        <p class="mb-5 pb-lg-2" style="color: #393f81;"> <a class="small text-muted" href="./login">Already have an account? Login!</a></p>
+                        <br>
+                      </div>
+                  </div>
                 </div>
-                <button type="submit"class="btn btn-primary btn-user btn-block">
-
-                  <h4>    Reset Password</h4>
-                  </button>
-
-              </form>
-              <hr>
-              <br>
-              <div class="text-center">
-                <a href="./login">Already have an account? Login!</a>
               </div>
-              <br>
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
-
-  </div>
-
+  </main>
 </div>
-
-</div>
-
-
-
+</body>
 
 
 {% endblock %}

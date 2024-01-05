@@ -2,12 +2,9 @@ from flask import Flask, g, request
 import uuid
 import requests
 
-from trader_ui.dependencies.audit import Audit_logger
-
 app = Flask(__name__)
 
 app.config.from_pyfile("config.py")
-audit_logger = Audit_logger(app.config["AUDIT_API_URL"], app.config["APP_NAME"])
 
 
 @app.before_request
@@ -21,15 +18,6 @@ def before_request():
     g.requests.headers.update({'X-Trace-ID': g.trace_id})
 
 
-@app.after_request
-def after_request(response):
-    # Add the API version (as in the interface spec, not the app) to the header. Semantic versioning applies - see the
-    # API manual. A major version update will need to go in the URL. All changes should be documented though, for
-    # reusing teams to take advantage of.
-    response.headers["X-API-Version"] = "1.0.0"
-    if app.config['ALLOW_HTTPS_TRAFFIC_ONLY']:
-        response.headers['Strict-Transport-Security'] = "max-age=31536000"
-    return response
 #these imports must be included after the app object has been created as it is imported in them
 from trader_ui.blueprints import register_blueprints
 from trader_ui.exceptions import register_exception_handlers

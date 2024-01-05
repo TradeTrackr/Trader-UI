@@ -12,9 +12,9 @@ import json
 from trader_ui.exceptions import ApplicationError
 from trader_ui.config import Config
 from urllib.parse import urljoin
-from dependencies.authentication import AuthenticationService
-from dependencies.login_api import LoginApi
-from dependencies.account_api import AccountApi
+from trader_ui.dependencies.authentication import AuthenticationService
+from trader_ui.dependencies.login_api import LoginApi
+from trader_ui.dependencies.account_api import AccountApi
 
 login = Blueprint("login", __name__)
 
@@ -30,7 +30,7 @@ def login_validate():
 @login.route("/login/new_pass/<email>/<random>", methods=["GET", "POST"])
 def new_pass(email, random):
     if request.method == "GET":
-        return render_template("pages/new_pass.html",
+        return render_template("pages/login/new_pass.html",
                 email=email.lower(),
                 random=random,
                 CDN_URL=Config.CDN_URL
@@ -43,7 +43,7 @@ def new_pass(email, random):
 @login.route("/login/reset_pass", methods=["GET", "POST"])
 def reset_pass():
     if request.method == "GET":
-        return render_template("pages/reset_pass.html", CDN_URL=Config.CDN_URL)
+        return render_template("pages/login/reset_pass.html", CDN_URL=Config.CDN_URL)
     elif request.method == "POST":
         return LoginManager.reset_pass_post()
 
@@ -55,7 +55,7 @@ class LoginManager:
         session["next"] = request.args.get("next", "/")
         if session.get("keep_me_logged_in_company") == "logged_in":
             return redirect("./home")
-        return render_template("pages/display_logins.html", error="none", CDN_URL=Config.CDN_URL)
+        return render_template("pages/login/display_logins.html", error="none", CDN_URL=Config.CDN_URL)
 
     @staticmethod
     def validate_login():
@@ -69,13 +69,9 @@ class LoginManager:
 
         get_account_by_email = AccountApi().get_account(post_data.get("email").lower())
 
-        # code u001 has been specified to be an incorrect email and password combination so we should check for this
+
         if json_data["error_code"] == "u001":
-            return render_template(
-                "pages/display_logins.html",
-                error="error-password-username",
-                CDN_URL=Config.CDN_URL,
-            )
+            return {"error": "error-password-username"}
 
         if "keep_me_logged_in" in post_data:
             if post_data["keep_me_logged_in"] == "true":
@@ -87,14 +83,14 @@ class LoginManager:
         session["cookie_policy"] = "yes"
         session["error"] = ""
 
-        return redirect("./home")
+        return 200
 
     @staticmethod
     def set_new_pass(email, random):
 
         if random == " ":
             return render_template(
-                "pages/new_pass.html",
+                "pages/login/new_pass.html",
                 error="invalid-link",
                 CDN_URL=Config.CDN_URL,
             )
@@ -108,27 +104,15 @@ class LoginManager:
 
         # code u001 has been specified to be an incorrect email and password combination so we should check for this
         if json_data["error_code"] == "u001":
-            return render_template(
-                "pages/new_pass.html",
-                error="pass-not-set",
-                CDN_URL=Config.CDN_URL,
-            )
+            return {"error": "pass-not-set"}
         if json_data["error_code"] == "u005":
-            return render_template(
-                "pages/new_pass.html",
-                error="expired",
-                CDN_URL=Config.CDN_URL,
-            )
+            return {"error": "expired"}
         if json_data["error_code"] == "u005":
-            return render_template(
-                "pages/new_pass.html",
-                error="invalid-link",
-                CDN_URL=Config.CDN_URL,
-            )
+            return {"error": "invalid-link"}
         if json_data['error_code'] == 'u004':
-            return render_template('pages/new_pass.html', error="expired",  CDN_URL=Config.CDN_URL)
-
-        return render_template("pages/display_logins.html", error="mew-pass-set")
+            return {"error": "expired"}
+        else:
+            return {"error": "new-pass-set"}
 
     @staticmethod
     def reset_pass_post():
@@ -139,14 +123,7 @@ class LoginManager:
 
         json_data = LoginApi().reset_pass(payload)
 
-        # code u001 has been specified to be an incorrect email and password combination so we should check for this
         if json_data["error_code"] == "u001":
-            return render_template(
-                "pages/reset_pass.html",
-                error="reset-pass-not-sent",
-                CDN_URL=Config.CDN_URL,
-            )
-
-        return render_template(
-            "pages/display_logins.html", error="reset-pass-sent", CDN_URL=Config.CDN_URL
-        )
+            return {"error": "reset-pass-not-sent"}
+        else:
+            return {"error": "reset-pass-sent"}
