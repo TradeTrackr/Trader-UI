@@ -14,11 +14,15 @@
 
   <div class="container">
 
+
   <!--Main layout-->
   <main >
     <div class="container pt-4">
+      <div id="alert-messages">
+
+      </div>
       <!-- Section: Main chart -->
-      <section class="vh-100" style="background-color: #9A616D;">
+      <section class="vh-100">
         <div class="container py-5 h-100">
           <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col col-xl-10">
@@ -90,8 +94,9 @@
  
     const loginForm = document.getElementById('login-form');
     const loadingSpinner = document.getElementById('loadingSpinner');
-    const mainContent = document.querySelector('.container'); // Adjust if your container class is different
-  
+    const mainContent = document.querySelector('.container');
+    const alertMessagesDiv = document.getElementById('alert-messages');
+
     loginForm.addEventListener('submit', function(e) {
       e.preventDefault();
   
@@ -107,14 +112,20 @@
   
       let formData = new FormData(loginForm);
   
-      fetch('./login', {
+      fetch('./login/validate_login', {
         method: 'POST',
         body: formData
       })
       .then(response => response.json())
       .then(data => {
         // Handle success
-        console.log('Success:', data);
+        if (data['result'] == 'error-password-username'){
+          displayErrorMessage();
+        } else if (data['result'] == 'OK'){
+          window.location.href = "/home";
+        }
+
+
       })
       .catch((error) => {
         // Handle errors
@@ -126,6 +137,22 @@
         mainContent.style.filter = 'none';
       });
     });
+
+
+  function displayErrorMessage() {
+
+    const errorMessageHtml = `
+      <div class="col-sm-12">
+        <div class="alert alert-danger justify-content-between">
+          <strong>Error! </strong>  Wrong username or password combination
+        </div>
+      </div>
+    `;
+
+    // Append or replace the existing error message
+    alertMessagesDiv.innerHTML = errorMessageHtml;
+
+  }
   </script>
   
 

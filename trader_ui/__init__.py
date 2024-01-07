@@ -20,11 +20,8 @@ def before_request():
 
 #these imports must be included after the app object has been created as it is imported in them
 from trader_ui.blueprints import register_blueprints
-from trader_ui.exceptions import register_exception_handlers
-
 from trader_ui.extensions import register_extensions
 
 # Register any extensions we use into the app
 register_extensions(app)
-register_exception_handlers(app)
 register_blueprints(app)

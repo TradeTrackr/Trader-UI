@@ -1,23 +1,11 @@
-from flask import request, Blueprint, Response, jsonify, current_app, render_template
-from trader_ui import app, config
+from flask import Blueprint, render_template
 import json
+from trader_ui.config import Config
+from trader_ui.utilities import authentication
 
 dashboard = Blueprint('dashboard', __name__)
 
 @dashboard.route("/home")
+@authentication.token_required
 def home():
-    return 'Hello World'
-
-
-@dashboard.route("/health")
-def check_status():
-    return Response(response=json.dumps({
-        "app": current_app.config["APP_NAME"],
-        "status": "OK",
-        "headers": request.headers.to_list()
-    }),  mimetype='application/json', status=200)
-
-
-@dashboard.route("/showcase")
-def showcase_temp():
-    return "this is a test route for the plymouth university showcase"
+    return render_template("pages/dashboard/dashboard.html", error="none", CDN_URL=Config.CDN_URL)

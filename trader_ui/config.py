@@ -3,10 +3,16 @@ import os
 SECRET_KEY = os.environ["SECRET_KEY"]
 
 class Config:
+
+    ALGORITHM = os.environ['ALGORITHM']
+    JWT_SECRET_KEY = os.environ['JWT_SECRET_KEY']
+
     LOGIN_API_ENDPOINT = os.environ["LOGIN_API_ENDPOINT"]
     ACCOUNT_API_ENDPOINT = os.environ["ACCOUNT_API_ENDPOINT"]
     ENQUIRY_API_ENDPOINT = os.environ["ENQUIRY_API_ENDPOINT"]
     CDN_URL = os.environ['CDN_URL']
+    APP_NAME = os.environ['APP_NAME']
+
 
     # For logging
     FLASK_LOG_LEVEL = os.environ["FLASK_LOG_LEVEL"]

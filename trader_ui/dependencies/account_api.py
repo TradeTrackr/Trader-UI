@@ -5,7 +5,7 @@ from trader_ui.config import Config
 
 class AccountApi():
 
-    def get_account(email):
+    def get_account(self, email):
         params = {"email": email}
 
         headers = {

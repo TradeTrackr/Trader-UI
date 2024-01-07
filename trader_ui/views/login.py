@@ -5,16 +5,13 @@ from flask import (
     request,
     current_app,
     session,
+    jsonify,
     g,
 )
 import requests
 import json
-from trader_ui.exceptions import ApplicationError
 from trader_ui.config import Config
-from urllib.parse import urljoin
-from trader_ui.dependencies.authentication import AuthenticationService
 from trader_ui.dependencies.login_api import LoginApi
-from trader_ui.dependencies.account_api import AccountApi
 
 login = Blueprint("login", __name__)
 
@@ -62,28 +59,25 @@ class LoginManager:
         post_data = request.form
 
         payload = {}
-        payload["email"] = post_data.get("email").lower()
+        payload["username"] = post_data.get("email").lower()
         payload["password"] = post_data.get("password")
 
         json_data = LoginApi().verify_login(payload)
-
-        get_account_by_email = AccountApi().get_account(post_data.get("email").lower())
-
-
-        if json_data["error_code"] == "u001":
-            return {"error": "error-password-username"}
+        if "detail" in json_data:        
+            if json_data["detail"] == "Incorrect email or password":
+                return jsonify({"result":"error-password-username"})
 
         if "keep_me_logged_in" in post_data:
             if post_data["keep_me_logged_in"] == "true":
                 session["keep_me_logged_in_company"] = "logged_in"
                 session.permanent = True
 
-        session["account_id"] = get_account_by_email[0]["account_id"]
-        session["email"] = post_data.get("email").lower()
+        session["access_token"] = json_data.get('access_token')
+        session["refresh_token"] = json_data.get("refresh_token")
         session["cookie_policy"] = "yes"
         session["error"] = ""
 
-        return 200
+        return jsonify({"result": "OK"})
 
     @staticmethod
     def set_new_pass(email, random):
@@ -101,18 +95,19 @@ class LoginManager:
         payload["code"] = random
         
         json_data = LoginApi().update_password(payload)
-
+        
         # code u001 has been specified to be an incorrect email and password combination so we should check for this
-        if json_data["error_code"] == "u001":
-            return {"error": "pass-not-set"}
-        if json_data["error_code"] == "u005":
-            return {"error": "expired"}
-        if json_data["error_code"] == "u005":
-            return {"error": "invalid-link"}
-        if json_data['error_code'] == 'u004':
-            return {"error": "expired"}
+        if "detail" in json_data:
+            if json_data["detail"] == "Not Found":
+                return {"result": "pass-not-set"}
+            if json_data["error_code"] == "u005":
+                return {"result": "expired"}
+            if json_data["error_code"] == "u005":
+                return {"result": "invalid-link"}
+            if json_data['error_code'] == 'u004':
+                return {"result": "expired"}
         else:
-            return {"error": "new-pass-set"}
+            return {"result": "new-pass-set"}
 
     @staticmethod
     def reset_pass_post():
@@ -124,6 +119,6 @@ class LoginManager:
         json_data = LoginApi().reset_pass(payload)
 
         if json_data["error_code"] == "u001":
-            return {"error": "reset-pass-not-sent"}
+            return {"result": "reset-pass-not-sent"}
         else:
-            return {"error": "reset-pass-sent"}
+            return {"result": "reset-pass-sent"}
