@@ -1,30 +1,35 @@
 from flask import Flask, request, redirect, abort, session
 import datetime
 from functools import wraps
-from jose import jwt, JWTError
+from jose import jwt, JWTError, ExpiredSignatureError
 from trader_ui.config import Config
 
-# Create a decorator for token required
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        token = None
-
-        # Check if token is passed in the headers
-        if 'access_token' not in session:
+        if 'access_token' not in session or 'refresh_token' not in session:
             session.clear()
             return redirect("./login")
         
-        token = session['access_token']
+        access_token = session['access_token']
+        refresh_token = session['refresh_token']
 
         try:
             # Decode the token
-            payload = jwt.decode(token, Config.JWT_SECRET_KEY, algorithms=[Config.ALGORITHM])
-            current_user = payload.get("sub")
-            if current_user is None:
-                raise JWTError("Invalid token payload")
-
-        except JWTError as e:
+            payload = jwt.decode(access_token, Config.JWT_SECRET_KEY, algorithms=[Config.ALGORITHM])
+            # You may also want to add additional validation here
+        except ExpiredSignatureError:
+            # If Token has expired, attempt to refresh
+            try:
+                print('timed out')
+                new_access_token, new_refresh_token = Authentication.refresh_access_token(refresh_token)
+                # Update session with new tokens
+                session['access_token'] = new_access_token
+                session['refresh_token'] = new_refresh_token
+            except JWTError:
+                session.clear()
+                return redirect("./login")
+        except JWTError:
             session.clear()
             return redirect("./login")
 
@@ -39,6 +44,14 @@ class Authentication(object):
         to_encode.update({"exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=int(Config.ACCESS_TOKEN_EXPIRE_MINUTES))})
         encoded_jwt = jwt.encode(to_encode, Config.JWT_SECRET_KEY, algorithm=Config.ALGORITHM)
         return encoded_jwt
+
+    @staticmethod
+    def refresh_access_token(refresh_token: str):
+        id = Authentication.validate_refresh_token(refresh_token)
+        user_data = {'sub': id}  # Modify as per your user data structure
+        new_access_token = Authentication.create_access_token(user_data)
+        new_refresh_token = Authentication.create_refresh_token(user_data)
+        return new_access_token, new_refresh_token
 
     @staticmethod
     def create_refresh_token(data: dict, expires_delta: datetime.timedelta = None):

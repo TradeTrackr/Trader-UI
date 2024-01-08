@@ -71,7 +71,8 @@ class LoginManager:
             if post_data["keep_me_logged_in"] == "true":
                 session["keep_me_logged_in_company"] = "logged_in"
                 session.permanent = True
-
+        
+        session["id"] = json_data.get('id')
         session["access_token"] = json_data.get('access_token')
         session["refresh_token"] = json_data.get("refresh_token")
         session["cookie_policy"] = "yes"
