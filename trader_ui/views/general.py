@@ -16,6 +16,6 @@ def check_status():
     }),  mimetype='application/json', status=200)
 
 
-@general.route("/showcase")
-def showcase_temp():
-    return "this is a test route for the plymouth university showcase"
+@general.route("/no-access")
+def no_access():
+    return render_template("pages/errors/no-access.html")

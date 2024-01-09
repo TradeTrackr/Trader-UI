@@ -3,6 +3,28 @@ import datetime
 from functools import wraps
 from jose import jwt, JWTError, ExpiredSignatureError
 from trader_ui.config import Config
+from trader_ui.dependencies.enquiry_api import EnquiryApi
+
+
+def check_enquiry_accounts(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if 'id' in kwargs:
+            enquiry_id = kwargs.get('id')
+            company_id = session['id']
+
+            enquiry_details = EnquiryApi().get_enquiry(enquiry_id)
+            print(enquiry_details)
+            if enquiry_details != []:
+                if enquiry_details[0].get('company_id') != company_id:
+                    return redirect("./no-access")
+
+            else:
+                return redirect("./no-access")
+
+        return f(*args, **kwargs)
+
+    return decorated
 
 def token_required(f):
     @wraps(f)

@@ -4,15 +4,16 @@ from trader_ui.config import Config
 from trader_ui.utilities import authentication
 from trader_ui.dependencies.enquiry_api import EnquiryApi
 
-dashboard = Blueprint('dashboard', __name__)
+client = Blueprint('client', __name__)
 
-@dashboard.route("/home")
+@client.route("/client/enquiry/<id>")
 @authentication.token_required
-def home():
-    enquiries = EnquiryApi().get_enquiries()
+@authentication.check_enquiry_accounts
+def enquiry(id):
+    enquiry = EnquiryApi().get_enquiry(id)
 
-    return render_template("pages/dashboard/dashboard.html",
+    return render_template("pages/client/enquiry.html",
                             error="none",
                             CDN_URL=Config.CDN_URL,
-                            enquiries_list=enquiries
+                            enquiries_list=enquiry
                         )

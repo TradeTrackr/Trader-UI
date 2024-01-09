@@ -96,4 +96,10 @@ body {
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
 }
 
+
+.error_image {
+  width: 52%;
+  height: auto;
+}
+
 /* var(--colour1); */
