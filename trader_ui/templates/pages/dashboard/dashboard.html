@@ -10,12 +10,28 @@
 {% include 'nav.html' %}
 <style>
   /* Custom styles */
-  .table th, .table td {
-    max-width: 250px; /* Adjust this value as needed */
+  .table th, .table td{
+    max-width: 180px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    cursor: pointer!important;
   }
+  .table td.expanded {
+  max-width: none;
+  white-space: normal;
+}
+.wide-column {
+  width: 400px!important; 
+  white-space: normal!important;
+  word-wrap: break-word;
+  max-height:600px;
+  
+}
+.wide-column {
+  width: 180px; 
+
+}
 </style>
 <body>
   <!--Main layout-->
@@ -378,9 +394,42 @@
 
       // Add the 'active' class to this element
       dashboardTab.classList.add('active');
-
+  
+      document.querySelectorAll('.read-more-link').forEach(link => {
+        link.addEventListener('click', function(event) {
+        event.preventDefault();
+        let cell = this.parentElement;
+        let fullText = this.nextElementSibling;
+        let shortText = cell.querySelector('.short-text');
+        shortText.style.display = 'none';
+        let hideLink = cell.querySelector('.hide-text');
+        hideLink.style.display = 'inline';
+        fullText.style.display = 'block';
+        this.style.display = 'none';
+        cell.classList.add('wide-column');
+      });
   });
 
+  document.querySelectorAll('.hide-text').forEach(link => {
+  link.addEventListener('click', function(event) {
+    event.preventDefault();
+
+    // Use closest to find the nearest parent td
+    let cell = this.parentElement;
+    let shortText = cell.querySelector('.short-text');
+    let fullText = cell.querySelector('.full-text');
+    let readMoreLink = cell.querySelector('.read-more-link');
+
+    shortText.style.display = 'block';
+    fullText.style.display = 'none';
+    this.style.display = 'none';
+    readMoreLink.style.display = 'inline';
+    cell.classList.remove('wide-column'); // This should now work correctly
+  });
+});
+
+
+});
 
   function populateTable() {
       let tableBody = document.getElementById('enquiries-table');
@@ -389,10 +438,34 @@
       enquiriesList.forEach((enquiry) => {
           let formattedTimestamp = formatDate(enquiry.timestamp);
 
+          var shorter_info = enquiry.additional_information
+          var td_text = ''
+          if (shorter_info.length > 20) {
+            var shorter_info = shorter_info.slice(0, 20);
+            var td_text =  `
+
+                          <td >
+                <span class="short-text"> ${shorter_info}</span>
+                <a href="#" class="read-more-link">Read More</a>
+                <span class="full-text" style="display:none;">  ${enquiry.additional_information} - ${enquiry.postcode}</span>
+                <a href="#" class="hide-text" style="display: none;">Hide</a>
+
+              </td>
+             
+            `
+          }else{
+            var td_text =  `
+                          <td>
+                <span class="short-text"> ${enquiry.additional_information}</span>
+              </td>
+             
+            `
+          }
           let row = `<tr>
               <td>${enquiry.full_name}</td>
               <td>${enquiry.phone_number}</td>
-              <td>${enquiry.additional_information} - ${enquiry.postcode}</td>
+            
+              ${td_text}
               <td>${formattedTimestamp}</td>
               <td> <span class="badge badge-success rounded-pill">New</span></td>
               <td>
@@ -452,6 +525,8 @@
       // Re-add the sorted rows to the table
       rows.forEach(row => tableBody.appendChild(row));
   }
+
+
 </script>
 {% endblock %}
 

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, jsonify
+from flask import Blueprint, render_template
 import json
 from trader_ui.config import Config
 from trader_ui.utilities import authentication
@@ -16,4 +16,17 @@ def enquiry(id):
                             error="none",
                             CDN_URL=Config.CDN_URL,
                             enquiry=enquiry[0]
+                        )
+
+
+@client.route("/user/profile/<email>")
+@authentication.token_required
+@authentication.check_enquiry_accounts
+def user_profile(email):
+    enquiry = EnquiryApi().get_user_properties_and_history(email)
+    return render_template("pages/client/user.html",
+                            error="none",
+                            CDN_URL=Config.CDN_URL,
+                            email=email,
+                            enquiry=enquiry
                         )

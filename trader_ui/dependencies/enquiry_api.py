@@ -18,6 +18,20 @@ class EnquiryApi():
 
         return json.loads(resp.text)
 
+    def get_enquiry_to_check(self, params):
+
+        headers = {
+            "Content-Type": "application/json",
+        }
+
+        resp = requests.get(
+            Config.ENQUIRY_API_ENDPOINT + f"/get_enquiry_to_check",
+            headers=headers,
+            data=json.dumps(params)
+        )
+
+        return json.loads(resp.text)
+
     def get_enquiry(self, id):
 
         headers = {
@@ -40,6 +54,22 @@ class EnquiryApi():
         resp = requests.get(
             Config.ENQUIRY_API_ENDPOINT + f"/get_enquiry/{id}/{session['id']}",
             headers=headers,
+        )
+
+        return json.loads(resp.text)
+
+    def get_user_properties_and_history(self, email):
+
+        headers = {
+            "Content-Type": "application/json",
+        }
+        data = {
+            "email": email
+        }
+        resp = requests.get(
+            Config.ENQUIRY_API_ENDPOINT + f"/get_user_enquiries/{session['id']}",
+            headers=headers,
+            data=json.dumps(data)
         )
 
         return json.loads(resp.text)

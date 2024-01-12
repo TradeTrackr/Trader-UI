@@ -9,18 +9,30 @@ from trader_ui.dependencies.enquiry_api import EnquiryApi
 def check_enquiry_accounts(f):
     @wraps(f)
     def decorated(*args, **kwargs):
+        params = {}
         if 'id' in kwargs:
             enquiry_id = kwargs.get('id')
             company_id = session['id']
+            params = {"id":enquiry_id, "company_id": session['id']}
 
-            enquiry_details = EnquiryApi().get_enquiry(enquiry_id)
-            print(enquiry_details)
-            if enquiry_details != []:
-                if enquiry_details[0].get('company_id') != company_id:
-                    return redirect("./no-access")
+
+        elif 'email' in kwargs:
+            enquiries_email = kwargs.get('email')
+            company_id = session['id']
+            params = {"email":enquiries_email, "company_id": session['id']}
+
+        if params != {}:
+            enquiry = EnquiryApi().get_enquiry_to_check(params)
+        
+            if enquiry != []:
+                for enquirey in enquiry:
+                    if enquirey.get('company_id') != company_id:
+                        return redirect("./no-access")
 
             else:
                 return redirect("./no-access")
+        else:
+            return redirect("./no-access")
 
         return f(*args, **kwargs)
 
