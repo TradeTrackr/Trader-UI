@@ -34,8 +34,8 @@
                     <th scope="col">Name</th>
                     <th scope="col">Number</th>
                     <th scope="col">Enquiry</th>
-                    <th scope="col">Status</th>
                     <th scope="col">Date</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Action</th>
 
 
@@ -386,7 +386,7 @@
               <td>${enquiry.phone_number}</td>
               <td>${enquiry.additional_information} - ${enquiry.postcode}</td>
               <td>${formattedTimestamp}</td>
-              <td> <span class="badge badge-warning rounded-pill">Awaiting</span></td>
+              <td> <span class="badge badge-success rounded-pill">New</span></td>
               <td>
                 <a href="./client/enquiry/${enquiry.id}">  <button type="button" class="btn btn-link btn-sm btn-rounded" onclick="showSpinnerAndBlur()">
           View
