@@ -8,7 +8,15 @@
 
 {% block content %}
 {% include 'nav.html' %}
-
+<style>
+  /* Custom styles */
+  .table th, .table td {
+    max-width: 250px; /* Adjust this value as needed */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+</style>
 <body>
   <!--Main layout-->
   <div id="loadingSpinner" class="spinner-overlay" style="display:none;">
@@ -405,6 +413,7 @@
       const date = new Date(dateString);
       return new Intl.DateTimeFormat('default', options).format(date).replace(/\//g, '-').replace(',', '');
   }
+
   function showSpinnerAndBlur() {
         var loadingSpinner = document.getElementById('loadingSpinner');
         var mainContent = document.getElementById('mainContent');

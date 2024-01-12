@@ -52,12 +52,8 @@
                       <p class="mb-4"><span class="text-primary font-italic me-1">Enquiry</span> Progress
                       </p>
 
-                  <ul class="list-group list-group-flush rounded-3">
-                    <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <div class="me-4">Enquiry Created  </div>
-                      <i class="fas fa-square-check text-success fa-1x"></i>
-                    
-                    </li>
+                  <ul class="list-group list-group-flush rounded-3" id="enquiry-progress">
+
 
                   </ul>
                 </div>
@@ -90,6 +86,15 @@
                     </div>
                     <div class="col-sm-9">
                       <p class="text-muted mb-0" id="enquiry-number"></p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Enquiry Date</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0" id="enquiry-date"></p>
                     </div>
                   </div>
                   <hr>
@@ -160,7 +165,13 @@
 
 <script>
     var jsonData = {{ enquiry | tojson }};
+    function formatDate(dateString) {
+      const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false };
+      const date = new Date(dateString);
+      return new Intl.DateTimeFormat('default', options).format(date).replace(/\//g, '-').replace(',', '');
+  }
     document.addEventListener('DOMContentLoaded', function() {
+      
         // Check if the jsonData has the required properties
         if (jsonData.address_line1) {
             document.getElementById('enquiry-address-1').textContent = jsonData.address_number_or_name + ' ' +jsonData.address_line1;
@@ -180,12 +191,35 @@
         if (jsonData.phone_number) {
             document.getElementById('enquiry-number').textContent = jsonData.phone_number;
         }
+        if (jsonData.timestamp) {
+          let formattedTimestamp = formatDate(jsonData.timestamp);
+            document.getElementById('enquiry-date').textContent = formattedTimestamp;
+        }
         if (jsonData.additional_information) {
             document.getElementById('info-container').textContent = jsonData.additional_information;
         }
         if (jsonData.activities) {
-          for(actvity in jsonData.activities){
-            console.log(actvity)
+          const container = document.getElementById('enquiry-progress');
+          for(count in jsonData.activities){
+
+            const listattag = document.createElement('li');
+            listattag.className = "list-group-item d-flex justify-content-between align-items-center p-3"
+
+            const statusdiv = document.createElement('div');
+            statusdiv.className = "me-4"
+            statusdiv.innerHTML = jsonData.activities[count].status
+
+            let formattedTimestamp = formatDate(jsonData.activities[count].timestamp);
+            const icontag = document.createElement('i');
+            icontag.textContent = formattedTimestamp
+
+            listattag.appendChild(statusdiv);
+            listattag.appendChild(icontag);
+
+            container.appendChild(listattag);
+
+
+
           }
         }
 
