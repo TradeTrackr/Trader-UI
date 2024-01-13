@@ -9,6 +9,7 @@ class EnquiryApi():
 
         headers = {
             "Content-Type": "application/json",
+            "Authorization": f"Bearer {session['access_token']}"
         }
 
         resp = requests.get(
@@ -22,6 +23,7 @@ class EnquiryApi():
 
         headers = {
             "Content-Type": "application/json",
+            "Authorization": f"Bearer {session['access_token']}"
         }
 
         resp = requests.get(
@@ -36,6 +38,7 @@ class EnquiryApi():
 
         headers = {
             "Content-Type": "application/json",
+            "Authorization": f"Bearer {session['access_token']}"
         }
 
         resp = requests.get(
@@ -49,6 +52,7 @@ class EnquiryApi():
 
         headers = {
             "Content-Type": "application/json",
+            "Authorization": f"Bearer {session['access_token']}"
         }
 
         resp = requests.get(
@@ -62,6 +66,7 @@ class EnquiryApi():
 
         headers = {
             "Content-Type": "application/json",
+            "Authorization": f"Bearer {session['access_token']}"
         }
         data = {
             "email": email
