@@ -12,6 +12,8 @@ class Config:
     LOGIN_API_ENDPOINT = os.environ["LOGIN_API_ENDPOINT"]
     ACCOUNT_API_ENDPOINT = os.environ["ACCOUNT_API_ENDPOINT"]
     ENQUIRY_API_ENDPOINT = os.environ["ENQUIRY_API_ENDPOINT"]
+    QUOTES_API_ENDPOINT = os.environ['QUOTES_API_ENDPOINT']
+
     CDN_URL = os.environ['CDN_URL']
     APP_NAME = os.environ['APP_NAME']
 

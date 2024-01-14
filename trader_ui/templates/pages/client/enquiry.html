@@ -15,7 +15,7 @@
     <div class="container pt-4">
 
       <div class="row">
-        <div class="col">
+        <div class="col-md-10">
           <nav aria-label="breadcrumb" class="bg-light rounded-3 mb-4">
             <ol class="breadcrumb mb-0">
               <li class="breadcrumb-item"><a href="./home">Home</a></li>
@@ -23,9 +23,78 @@
               <li class="breadcrumb-item active" aria-current="page">Enquiry</li>
             </ol>
           </nav>
+          </div>
+          <div class="col-md-2">
+
+          <button type="button" class="btn btn-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#newquotemodal">
+           New Quote
+          </button>
+          
+          <!-- Modal -->
+          <div class="modal fade" id="newquotemodal" tabindex="-1" aria-labelledby="newquotemodalLabel" aria-hidden="true">
+            
+            <form action="./new_quote" id="new-quote-form" method="POST">
+
+            <div class="modal-dialog">
+              <div class="modal-content" style="height: 560px;">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="newquotemodalLabel">New Quote</h5>
+                  <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                        <div class="form-outline" data-mdb-input-init>
+                        <input type="text" id="typeText" class="form-control" name='quote_title' />
+                        <label class="form-label" for="typeText">Title</label>
+                      </div>
+                      <br>
+
+                      <div class="form-outline" data-mdb-input-init>
+                        <textarea class="form-control" id="textAreaExample" rows="4" name='quote_details'></textarea>
+                        <label class="form-label" for="textAreaExample">Details</label>
+                      </div>
+                      <br>
+
+                      <div class="form-outline" data-mdb-input-init>
+                        <input type="amount" id="typeNumber" class="form-control" />
+                        <label class="form-label" for="typeNumber">Number input</label>
+                      </div>
+                      <br>
+
+                      <div class="form-outline" data-mdb-input-init>
+                        <select name="status" class="form-select" id="category_box">
+                          <option value="">Select Category</option>
+
+                      </select>
+      
+                      </div>  
+                  
+                      <br>
+                      <div class="form-outline" data-mdb-input-init>
+                        <select name="status" class="form-select" id="quote_type">
+                          <option value="">Select Quote Type</option>
+                          <option value="Estimate">Estimate</option>
+                          <option value="Formal">Formal</option>
+
+                      </select>
+      
+                      </div>  
+
+                      <br>  
+                    </div>
+  
+                  
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-mdb-ripple-init data-mdb-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" data-mdb-ripple-init>New Quote</button>
+                </div>
+              </div>
+            </form>
+
+            </div>
+          </div>
+
         </div>
       </div>
-      <!--Section: Sales Performance KPIs-->
       <section class="mb-4">
 
 
@@ -144,7 +213,27 @@
                 
               </div>
 
-              
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="card mb-4 mb-md-0">
+                    <div class="card-body">
+                      <p class="mb-4"><span class="text-primary font-italic me-1">Enquiry</span> Quotes
+                      </p>
+ 
+  <section class="">
+    
+    <div class="row" id="quotes-container" data-mdb-zoom-effect="true">
+      
+    </div>
+  </section>
+
+
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+            
             </div>
           </section>
           <div class="modal" id="imageModal" tabindex="-1">
@@ -165,13 +254,25 @@
 
 <script>
     var jsonData = {{ enquiry | tojson }};
+    var jsonDataCategories = {{ categories | tojson }};
+
     function formatDate(dateString) {
       const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false };
       const date = new Date(dateString);
       return new Intl.DateTimeFormat('default', options).format(date).replace(/\//g, '-').replace(',', '');
   }
     document.addEventListener('DOMContentLoaded', function() {
-      
+      if (! jsonDataCategories == []) {
+        var selectBox = document.getElementById('category_box'); // Replace 'select_box' with your select element's ID
+
+        categories.forEach(function(category) {
+            var option = document.createElement('option');
+            option.value = category.id;
+            option.text = category.name;
+            selectBox.appendChild(option);
+        });
+              
+      }
         // Check if the jsonData has the required properties
         if (jsonData.address_line1) {
             document.getElementById('enquiry-address-1').textContent = jsonData.address_number_or_name + ' ' +jsonData.address_line1;
@@ -223,8 +324,7 @@
           }
         }
 
-    });
-    document.addEventListener('DOMContentLoaded', function() {
+
     const imageDict = jsonData.photos
     console.log(imageDict)
     const container = document.getElementById('image-container');
@@ -263,6 +363,9 @@
         modal.show();
       });
     });
+
+    const quotes_container = document.getElementById('quotes-container');
+
     function createRowDiv() {
         const rowDiv = document.createElement('div');
         rowDiv.className = 'row';
@@ -270,8 +373,39 @@
     }
 });
 
-
-</script>
+  document.getElementById('new-quote-form').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevents the default form submission
+  
+      // Add your spinner here
+      // For example, you could add a spinner element or class to a div
+  
+      // Gather form data
+      var formData = new FormData(this);
+  
+      // Perform the AJAX request
+      fetch('./new_quote', {
+          method: 'POST',
+          body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data)
+          // Handle response data
+          // Remove the spinner
+          // Optionally, you can check the response and decide whether to reload
+  
+          // Reload the page
+          window.location.reload();
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          // Remove the spinner
+          // Handle the error
+      });
+  });
+  
+  </script>
+  
 {% endblock %}
 
 {% block script %}

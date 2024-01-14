@@ -3,10 +3,9 @@ import requests
 from flask import session
 from trader_ui.config import Config
 
-class TraderAccountApi():
+class QuotesAPI():
 
-    def get_account(self):
-        params = {"id": id}
+    def get_quotes(self, id):
 
         headers = {
             "Content-Type": "application/json",
@@ -14,14 +13,13 @@ class TraderAccountApi():
         }
 
         resp = requests.get(
-            Config.ACCOUNT_API_ENDPOINT + "/trader/get_company_by_email",
-            data=json.dumps(params),
+            Config.QUOTES_API_ENDPOINT + f"/quote/get_quote/{id}",
             headers=headers,
         )
 
         return json.loads(resp.text)
 
-    def get_categories(self):
+    def new_quote(self, params):
 
         headers = {
             "Content-Type": "application/json",
@@ -29,7 +27,8 @@ class TraderAccountApi():
         }
 
         resp = requests.get(
-            Config.ACCOUNT_API_ENDPOINT + f"/trader/get_categories/{session['id']}",
+            Config.QUOTES_API_ENDPOINT + "/quote/new",
+            data=json.dumps(params),
             headers=headers,
         )
 

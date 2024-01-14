@@ -10,6 +10,7 @@ dashboard = Blueprint('dashboard', __name__)
 @authentication.token_required
 def home():
     enquiries = EnquiryApi().get_enquiries()
+
     return render_template("pages/dashboard/dashboard.html",
                             error="none",
                             CDN_URL=Config.CDN_URL,
