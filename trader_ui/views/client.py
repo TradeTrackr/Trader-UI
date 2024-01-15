@@ -1,9 +1,10 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 import json
 from trader_ui.config import Config
 from trader_ui.utilities import authentication
 from trader_ui.dependencies.enquiry_api import EnquiryApi
 from trader_ui.dependencies.account_api import TraderAccountApi
+from trader_ui.dependencies.quotes_api import QuotesAPI
 
 client = Blueprint('client', __name__)
 
@@ -33,3 +34,9 @@ def user_profile(email):
                             email=email,
                             enquiry=enquiry
                         )
+
+@client.route("/client/new_quote", methods=["POST"])
+def new_quote():
+    post_data = request.form
+    
+    return QuotesAPI().new_quote(post_data)

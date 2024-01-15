@@ -25,11 +25,13 @@ class QuotesAPI():
             "Content-Type": "application/json",
             "Authorization": f"Bearer {session['access_token']}"
         }
+        params = dict(params)
+        params['status'] = 'new'
 
-        resp = requests.get(
+        resp = requests.post(
             Config.QUOTES_API_ENDPOINT + "/quote/new",
             data=json.dumps(params),
             headers=headers,
         )
-
+        print(json.loads(resp.text))
         return json.loads(resp.text)
