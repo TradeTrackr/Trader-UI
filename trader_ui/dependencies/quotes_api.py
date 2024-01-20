@@ -13,7 +13,7 @@ class QuotesAPI():
         }
 
         resp = requests.get(
-            Config.QUOTES_API_ENDPOINT + f"/quote/get_quote/{id}",
+            Config.QUOTES_API_ENDPOINT + f"/quote/get_quotes/{id}",
             headers=headers,
         )
 
@@ -27,11 +27,13 @@ class QuotesAPI():
         }
         params = dict(params)
         params['status'] = 'new'
+        
+        if params.get('category_id'):
+            params['category_id'] = int(params['category_id'])
 
         resp = requests.post(
             Config.QUOTES_API_ENDPOINT + "/quote/new",
             data=json.dumps(params),
             headers=headers,
         )
-        print(json.loads(resp.text))
-        return json.loads(resp.text)
+        return resp.text

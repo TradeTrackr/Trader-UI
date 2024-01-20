@@ -9,7 +9,7 @@ dashboard = Blueprint('dashboard', __name__)
 @dashboard.route("/home")
 @authentication.token_required
 def home():
-    enquiries = EnquiryApi().get_enquiries()
+    enquiries = EnquiryApi().get_new_enquiries()
 
     return render_template("pages/dashboard/dashboard.html",
                             error="none",

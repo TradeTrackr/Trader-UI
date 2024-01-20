@@ -223,7 +223,7 @@
                       </p>
  
   <section class="">
-    
+   
     <div class="row" id="quotes-container" data-mdb-zoom-effect="true">
       
     </div>
@@ -257,6 +257,7 @@
 <script>
     var jsonData = {{ enquiry | tojson }};
     var jsonDataCategories = {{ categories | tojson }};
+    var jsonDataQuotes = {{ quotes | tojson }};
 
     function formatDate(dateString) {
       const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false };
@@ -365,9 +366,72 @@
       });
     });
 
-    const quotes_container = document.getElementById('quotes-container');
+    if (! jsonDataQuotes == []) {
+      console.log(jsonDataQuotes['quotes'])
 
-    function createRowDiv() {
+      const quotes_container = document.getElementById('quotes-container');
+
+      for(count in jsonDataQuotes['quotes']){
+       var html =  `
+       <div class="d-flex justify-content-between align-items-center mb-5">
+    <div class="d-flex flex-row align-items-center">
+      <h4 class="mt-1">${jsonDataQuotes['quotes'][count].quote_title}</h4>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-7 col-lg-7 col-xl-6 mb-4 mb-md-0">
+
+      <div>
+
+        <p>
+          ${jsonDataQuotes['quotes'][count].quote_details}
+        </p>
+
+        <hr />
+
+        <div class="d-flex justify-content-between mt-2">
+          <span class="lh-sm">Quote Status</span>
+          <span>${jsonDataQuotes['quotes'][count].status}</span>
+        </div>
+
+        <br>
+        <div class="d-flex justify-content-between mt-2">
+          <span class="lh-sm">Quote Type</span>
+          <span>${jsonDataQuotes['quotes'][count].quote_type}</span>
+        </div>
+
+
+ 
+      </div>
+    </div>
+    <div class="col-md-5 col-lg-4 col-xl-4 offset-lg-1 offset-xl-2">
+      <div class="p-3" style="background-color: #eee;">
+        <span class="fw-bold">Order Recap</span>
+        <div class="d-flex justify-content-between mt-2">
+          <span>Quote Price</span> <span>£${jsonDataQuotes['quotes'][count].amount}</span>
+        </div>
+      
+        <hr />
+        <div class="d-flex justify-content-between mt-2">
+          <span>Total </span> <span class="text-success">£${jsonDataQuotes['quotes'][count].amount}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+       `
+
+          quotes_container.innerHTML += html;
+
+
+      }
+
+    
+  }
+
+
+  function createRowDiv() {
         const rowDiv = document.createElement('div');
         rowDiv.className = 'row';
         return rowDiv;

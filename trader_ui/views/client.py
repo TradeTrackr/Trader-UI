@@ -14,12 +14,25 @@ client = Blueprint('client', __name__)
 def enquiry(id):
     enquiry = EnquiryApi().get_enquiry_and_activity(id)
     categories = TraderAccountApi().get_categories()
-    print(categories)
+    quotes = QuotesAPI().get_quotes(id)
     return render_template("pages/client/enquiry.html",
                             error="none",
                             CDN_URL=Config.CDN_URL,
                             categories=categories,
+                            quotes=quotes,
                             enquiry=enquiry[0]
+                        )
+
+
+@client.route("/client/enquiries")
+@authentication.token_required
+def enquiries():
+    enquiries = EnquiryApi().get_enquiries()
+
+    return render_template("pages/client/enquiries.html",
+                            error="none",
+                            CDN_URL=Config.CDN_URL,
+                            enquiries_list=enquiries
                         )
 
 
@@ -38,5 +51,7 @@ def user_profile(email):
 @client.route("/client/new_quote", methods=["POST"])
 def new_quote():
     post_data = request.form
-    
-    return QuotesAPI().new_quote(post_data)
+    new_quote = QuotesAPI().new_quote(post_data)
+    EnquiryApi().update_enquiry_status('Quote Sent', post_data.get('enquiry_id'))
+
+    return new_quote
