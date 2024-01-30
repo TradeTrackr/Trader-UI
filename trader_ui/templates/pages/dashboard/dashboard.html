@@ -92,7 +92,7 @@
          
       
                             <div class="form-outline" data-mdb-input-init>
-                              <select name="category_id" class="form-select" id="category_box" required>
+                              <select name="category_id" class="form-select" id="category_box" >
                                 <option value="">Select Category</option>
       
                             </select>
@@ -100,16 +100,7 @@
                             </div>  
                         
                             <br>
-                            <div class="form-outline" data-mdb-input-init>
-                              <select name="quote_type" class="form-select" id="quote_type" required>
-                                <option value="">Select Quote Type</option>
-                                <option value="Estimate">Estimate</option>
-                                <option value="Formal">Formal</option>
-      
-                            </select>
-            
-                            </div>  
-                            <br>
+                        
         
                             <div id="date-picker-example" class="md-form md-outline input-with-post-icon datepicker" aria-haspopup="true" aria-expanded="false" aria-readonly="false" aria-owns="date-picker-example_root">
                               <label for="datetimePickerStart"> Appointment Start Date: </label>
@@ -404,25 +395,54 @@ $(document).ready(function() {
       });
 
 
-  function convertToFullCalendarEvents(data) {
+      function convertToFullCalendarEvents(data) {
     return data.map(function(event) {
         return {
-            title: event.event_title || event.quote.quote_title || 'No Title',
-            start: event.scheduled_start_date_and_time,
-            end: event.scheduled_end_date_and_time,
-            // icon: 'calendar', // or any icon you want to use
-            event_title: event.event_title || event.quote.quote_title,
-            notes: event.notes,
-            allDay: event.all_day
+            title: event.event_title ?? event?.quote?.quote_title ?? 'No Title',
+            start: event.scheduled_start_date_and_time ?? null,
+            end: event.scheduled_end_date_and_time ?? null,
+            event_title: event.event_title ?? event?.quote?.quote_title,
+            notes: event.notes ?? '',
+            allDay: event.all_day ?? false
         };
     });
 }
 
 
-
 	});
   
 
+  document.getElementById('new-quote-form').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevents the default form submission
+  
+      // Add your spinner here
+      // For example, you could add a spinner element or class to a div
+  
+      // Gather form data
+      var formData = new FormData(this);
+  
+      // Perform the AJAX request
+      fetch('./dashboard/new_event', {
+          method: 'POST',
+          body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data)
+          // Handle response data
+          // Remove the spinner
+          // Optionally, you can check the response and decide whether to reload
+  
+          // Reload the page
+          window.location.reload();
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          // Remove the spinner
+          // Handle the error
+      });
+  });
+  
 </script>
 {% endblock %}
 

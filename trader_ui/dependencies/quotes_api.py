@@ -47,7 +47,9 @@ class QuotesAPI():
         if params.get('category_id'):
             params['category_id'] = int(params['category_id'])
 
-        print(params)
+        if not params.get('all_day'):
+            params['all_day'] = False
+
         resp = requests.post(
             Config.QUOTES_API_ENDPOINT + "/quote/new",
             data=json.dumps(params),
@@ -64,6 +66,10 @@ class QuotesAPI():
         params = dict(params)
         params['status'] = 'new'
         params['company_id'] = session['id']
+
+        if not params.get('all_day'):
+            params['all_day'] = False
+
 
         print(params)
         resp = requests.post(
