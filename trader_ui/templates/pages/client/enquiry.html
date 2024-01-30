@@ -8,8 +8,9 @@
 
 {% block content %}
 {% include 'nav.html' %}
-
 <body>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker-standalone.css" />
+
   <!--Main layout-->
   <main style="margin-top: 58px">
     <div class="container pt-4">
@@ -33,7 +34,7 @@
           <!-- Modal -->
           <div class="modal fade" id="newquotemodal" tabindex="-1" aria-labelledby="newquotemodalLabel" aria-hidden="true">
             
-            <form action="./new_quote" id="new-quote-form" method="POST">
+            <form action="./client/new_quote" id="new-quote-form" method="POST">
 
             <div class="modal-dialog">
               <div class="modal-content" style="height: 560px;">
@@ -45,25 +46,25 @@
                 <input type="text" id="typeText" class="form-control" name='enquiry_id' hidden value="{{enquiry['id']}}"/>
 
                         <div class="form-outline" data-mdb-input-init>
-                        <input type="text" id="typeText" class="form-control" name='quote_title' />
+                        <input type="text" id="typeText" class="form-control" name='quote_title' required/>
                         <label class="form-label" for="typeText">Title</label>
                       </div>
                       <br>
 
                       <div class="form-outline" data-mdb-input-init>
-                        <textarea class="form-control" id="textAreaExample" rows="4" name='quote_details'></textarea>
+                        <textarea class="form-control" id="textAreaExample" rows="4" name='quote_details' required></textarea>
                         <label class="form-label" for="textAreaExample">Details</label>
                       </div>
                       <br>
 
                       <div class="form-outline" data-mdb-input-init>
-                        <input type="number" id="typeNumber" name="amount" class="form-control" />
+                        <input type="number" id="typeNumber" name="amount" class="form-control" required />
                         <label class="form-label" for="typeNumber">Price</label>
                       </div>
                       <br>
 
                       <div class="form-outline" data-mdb-input-init>
-                        <select name="category_id" class="form-select" id="category_box">
+                        <select name="category_id" class="form-select" id="category_box" required>
                           <option value="">Select Category</option>
 
                       </select>
@@ -72,7 +73,7 @@
                   
                       <br>
                       <div class="form-outline" data-mdb-input-init>
-                        <select name="quote_type" class="form-select" id="quote_type">
+                        <select name="quote_type" class="form-select" id="quote_type" required>
                           <option value="">Select Quote Type</option>
                           <option value="Estimate">Estimate</option>
                           <option value="Formal">Formal</option>
@@ -80,22 +81,39 @@
                       </select>
       
                       </div>  
-
+                      <br>
+                      
+                      <div id="date-picker-example" class="md-form md-outline input-with-post-icon datepicker" aria-haspopup="true" aria-expanded="false" aria-readonly="false" aria-owns="date-picker-example_root">
+                        <label for="datetimePickerStart"> Appointment Start Date: </label>
+                        <input type="datetime-local" class="form-control" id="datetimePickerStart" name="scheduled_start_date_and_time">
+                      </div><br>
+                      
+                      <div id="date-picker-example" class="md-form md-outline input-with-post-icon datepicker" aria-haspopup="true" aria-expanded="false" aria-readonly="false" aria-owns="date-picker-example_root">
+                        <label for="datetimePickerEnd"> Appointment End Date: </label>
+                        <input type="datetime-local" class="form-control" id="datetimePickerEnd" name="scheduled_end_date_and_time">
+                      </div>
+                     
                       <br>  
-                    </div>
-
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="allDayCheckbox" name="all_day">
+                        <label class="form-check-label" for="allDayCheckbox">
+                          All Day
+                        </label>
+                      </div>
+                      
                   
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-mdb-ripple-init data-mdb-dismiss="modal">Close</button>
                   <button type="submit" class="btn btn-primary" data-mdb-ripple-init>New Quote</button>
                 </div>
               </div>
-            </form>
 
             </div>
           </div>
+      </form>
 
         </div>
+
       </div>
       <section class="mb-4">
 
@@ -168,6 +186,8 @@
                       <p class="text-muted mb-0" id="enquiry-date"></p>
                     </div>
                   </div>
+                  <br>
+
                   <hr>
                   
                 </div>
@@ -254,7 +274,42 @@
   </main>
 </body>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+
 <script>
+jQuery(document).ready(function($) {
+    if (window.jQuery().datetimepicker) {
+        $('.datetimepicker').datetimepicker({
+            // Formats
+            // follow MomentJS docs: https://momentjs.com/docs/#/displaying/format/
+            format: 'DD-MM-YYYY hh:mm A',
+            
+            // Your Icons
+            // as Bootstrap 4 is not using Glyphicons anymore
+            icons: {
+                time: 'fa fa-clock-o',
+                date: 'fa fa-calendar',
+                up: 'fa fa-chevron-up',
+                down: 'fa fa-chevron-down',
+                previous: 'fa fa-chevron-left',
+                next: 'fa fa-chevron-right',
+                today: 'fa fa-check',
+                clear: 'fa fa-trash',
+                close: 'fa fa-times'
+            }
+        });
+    }
+});
+
+
+</script>
+<script>
+
     var jsonData = {{ enquiry | tojson }};
     var jsonDataCategories = {{ categories | tojson }};
     var jsonDataQuotes = {{ quotes | tojson }};
@@ -276,6 +331,14 @@
         });
               
       }
+
+      var allDayCheckbox = document.getElementById('allDayCheckbox');
+  var datetimePickerEnd = document.getElementById('datetimePickerEnd');
+
+  allDayCheckbox.addEventListener('change', function () {
+    datetimePickerEnd.disabled = this.checked;
+  });
+  
         // Check if the jsonData has the required properties
         if (jsonData.address_line1) {
             document.getElementById('enquiry-address-1').textContent = jsonData.address_number_or_name + ' ' +jsonData.address_line1;
@@ -419,7 +482,7 @@
       </div>
     </div>
   </div>
-  <hr>
+  <hr><br>
        `
 
           quotes_container.innerHTML += html;

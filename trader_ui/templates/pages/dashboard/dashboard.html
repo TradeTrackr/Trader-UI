@@ -8,7 +8,10 @@
 
 {% block content %}
 {% include 'nav.html' %}
+<style>
 
+
+</style>
 <body>
   <!--Main layout-->
   <div id="loadingSpinner" class="spinner-overlay" style="display:none;">
@@ -61,73 +64,82 @@
                 </div>
               </div>
             
-            <!-- calendar modal -->
-            <div id="modal-view-event" class="modal modal-top fade calendar-modal">
-                <div class="modal-dialog modal-dialog-centered">
-                  <div class="modal-content">
-                    <div class="modal-body">
-                      <h4 class="modal-title"><span class="event-icon"></span><span class="event-title"></span></h4>
-                      <div class="event-body"></div>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
               <div class="modal modal-top fade calendar-modal" id="modal-view-event-add" tabindex="-1" aria-labelledby="newquotemodalLabel" aria-hidden="true">
             
-                <form action="./new_event" id="new-event-form" method="POST">
-    
-                <div class="modal-dialog">
-                  <div class="modal-content" style="height: 560px;">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="newquotemodalLabel">New Event</h5>
-                      <button type="button" class="btn-close" data-mdb-ripple-init  data-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                            <div class="form-outline" data-mdb-input-init>
-                            <input type="text" id="typeText" class="form-control" name='quote_title' />
-                            <label class="form-label" for="typeText">Title</label>
-                          </div>
-                          <br>
-    
-                          <div class="form-outline" data-mdb-input-init>
-                            <textarea class="form-control" id="textAreaExample" rows="4" name='quote_details'></textarea>
-                            <label class="form-label" for="textAreaExample">Details</label>
-                          </div>
-                          <br>
-    
-    
-                          <div class="form-outline" data-mdb-input-init>
-                            <select name="status" class="form-select" id="category_box">
-                              <option value="">Select Category</option>
-    
-                          </select>
-          
-                          </div>  
-                      
-                          <br>
-                          <div class="form-outline" data-mdb-input-init>
-                            <select name="status" class="form-select" id="quote_type">
-                              <option value="">Select Quote Type</option>
-                              <option value="Estimate">Estimate</option>
-                              <option value="Formal">Formal</option>
-    
-                          </select>
-          
-                          </div>  
-    
-                          <br>  
-                        </div>
+                <form action="./dashboard/new_event" id="new-quote-form" method="POST">
+
+                  <div class="modal-dialog">
+                    <div class="modal-content" style="height: 560px;">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="newquotemodalLabel">New Event</h5>
+                        <button type="button" class="btn-close" data-mdb-ripple-init data-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
       
-                      
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary"  data-dismiss="modal" data-mdb-ripple-init >Close</button>
-                      <button type="button" class="btn btn-primary" data-mdb-ripple-init>New Quote</button>
+                              <div class="form-outline" data-mdb-input-init>
+                              <input type="text" id="typeText" class="form-control" name='quote_title' required/>
+                              <label class="form-label" for="typeText">Title</label>
+                            </div>
+                            <br>
+      
+                            <div class="form-outline" data-mdb-input-init>
+                              <textarea class="form-control" id="textAreaExample" rows="4" name='quote_details' required></textarea>
+                              <label class="form-label" for="textAreaExample">Details</label>
+                            </div>
+                            <br>
+      
+         
+      
+                            <div class="form-outline" data-mdb-input-init>
+                              <select name="category_id" class="form-select" id="category_box" required>
+                                <option value="">Select Category</option>
+      
+                            </select>
+            
+                            </div>  
+                        
+                            <br>
+                            <div class="form-outline" data-mdb-input-init>
+                              <select name="quote_type" class="form-select" id="quote_type" required>
+                                <option value="">Select Quote Type</option>
+                                <option value="Estimate">Estimate</option>
+                                <option value="Formal">Formal</option>
+      
+                            </select>
+            
+                            </div>  
+                            <br>
+        
+                            <div id="date-picker-example" class="md-form md-outline input-with-post-icon datepicker" aria-haspopup="true" aria-expanded="false" aria-readonly="false" aria-owns="date-picker-example_root">
+                              <label for="datetimePickerStart"> Appointment Start Date: </label>
+                              <input type="datetime-local" class="form-control" id="datetimePickerStart" name="scheduled_start_date_and_time">
+                            </div><br>
+                            
+                            <div id="date-picker-example" class="md-form md-outline input-with-post-icon datepicker" aria-haspopup="true" aria-expanded="false" aria-readonly="false" aria-owns="date-picker-example_root">
+                              <label for="datetimePickerEnd"> Appointment End Date: </label>
+                              <input type="datetime-local" class="form-control" id="datetimePickerEnd" name="scheduled_end_date_and_time">
+                            </div>
+                           
+                            <br>  
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" id="allDayCheckbox" name="all_day">
+                              <label class="form-check-label" for="allDayCheckbox">
+                                All Day
+                              </label>
+                            </div>
+                            <br>  
+  
+                        
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" >New Quote</button>
+                      </div>
                     </div>
+      
                   </div>
-                </form>
+                </div>
+            </form>
     
                 </div>
                 
@@ -147,11 +159,35 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.en.js"></script>
 
 <script>
+  
   // Assuming enquiries_list is passed to the template as a JSON string
   const enquiriesList = {{ enquiries_list | tojson | safe }};
   const loadingSpinner = document.getElementById('loadingSpinner');
+  var jsonDataCategories = {{ categories | tojson }};
 
   document.addEventListener('DOMContentLoaded', function() {
+
+
+    var allDayCheckbox = document.getElementById('allDayCheckbox');
+    var datetimePickerEnd = document.getElementById('datetimePickerEnd');
+
+    allDayCheckbox.addEventListener('change', function () {
+      datetimePickerEnd.disabled = this.checked;
+    });
+    
+
+    if (! jsonDataCategories == []) {
+        var selectBox = document.getElementById('category_box'); // Replace 'select_box' with your select element's ID
+        jsonDataCategories['categories'].forEach(function(category) {
+
+            var option = document.createElement('option');
+            option.value = category.id;
+            option.text = category.category;
+            selectBox.appendChild(option);
+        });
+              
+      }
+
       populateTable();
       attachSortHandlers();
       var dashboardTab = document.getElementById('dashboard-tab');
@@ -251,12 +287,18 @@
       return new Intl.DateTimeFormat('default', options).format(date).replace(/\//g, '-').replace(',', '');
   }
 
+
+  function hideSpinnerAndUnblur() {
+    var loadingSpinner = document.getElementById('loadingSpinner');
+
+    loadingSpinner.style.display = 'none';
+}
+
+
   function showSpinnerAndBlur() {
         var loadingSpinner = document.getElementById('loadingSpinner');
-        var mainContent = document.getElementById('mainContent');
 
         loadingSpinner.style.display = 'flex';
-        mainContent.style.filter = 'blur(8px)';
     }
 
   function attachSortHandlers() {
@@ -308,19 +350,25 @@
       );
   });
 });
+get_quotes=[]
 
-(function () {    
-    'use strict';
-    // ------------------------------------------------------- //
-    // Calendar
-    // ------------------------------------------------------ //
-	jQuery(function() {
+$(document).ready(function() { 
+  showSpinnerAndBlur()
+  fetch('./dashboard/get_quotes', {
+          method: 'GET',
+      })
+      .then(response => response.json())
+      .then(data => {
+        get_quotes=data['quotes']
+        var conveted_quotes = convertToFullCalendarEvents(get_quotes);
+
 		// page is ready
 		jQuery('#calendar').fullCalendar({
 			themeSystem: 'bootstrap4',
 			// emphasizes business hours
 			businessHours: false,
-			defaultView: 'month',
+			defaultView: 'agendaWeek',
+      timeFormat: 'h:mma',
 			// event dragging & resizing
 			editable: true,
 			// header
@@ -329,108 +377,7 @@
 				center: 'month,agendaWeek,agendaDay',
 				right: 'today prev,next'
 			},
-			events: [
-				{
-					title: 'Barber',
-					description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-					start: '2023-05-05',
-					end: '2023-05-05',
-					className: 'fc-bg-default',
-					icon : "circle"
-				},
-				{
-					title: 'Flight Paris',
-					description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-					start: '2023-08-08T14:00:00',
-					end: '2023-08-08T20:00:00',
-					className: 'fc-bg-deepskyblue',
-					icon : "cog",
-					allDay: false
-				},
-				{
-					title: 'Team Meeting',
-					description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-					start: '2023-07-10T13:00:00',
-					end: '2023-07-10T16:00:00',
-					className: 'fc-bg-pinkred',
-					icon : "group",
-					allDay: false
-				},
-				{
-					title: 'Meeting',
-					description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-					start: '2023-08-12',
-					className: 'fc-bg-lightgreen',
-					icon : "suitcase"
-				},
-				{
-					title: 'Conference',
-					description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-					start: '2023-08-13',
-					end: '2023-08-15',
-					className: 'fc-bg-blue',
-					icon : "calendar"
-				},
-				{
-					title: 'Baby Shower',
-					description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-					start: '2023-08-13',
-					end: '2023-08-14',
-					className: 'fc-bg-default',
-					icon : "child"
-				},
-				{
-					title: 'Birthday',
-					description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-					start: '2023-09-13',
-					end: '2023-09-14',
-					className: 'fc-bg-default',
-					icon : "birthday-cake"
-				},
-				{
-					title: 'Restaurant',
-					description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-					start: '2023-10-15T09:30:00',
-					end: '2023-10-15T11:45:00',
-					className: 'fc-bg-default',
-					icon : "glass",
-					allDay: false
-				},
-				{
-					title: 'Dinner',
-					description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-					start: '2023-11-15T20:00:00',
-					end: '2023-11-15T22:30:00',
-					className: 'fc-bg-default',
-					icon : "cutlery",
-					allDay: false
-				},
-				{
-					title: 'Shooting',
-					description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-					start: '2023-08-25',
-					end: '2023-08-25',
-					className: 'fc-bg-blue',
-					icon : "camera"
-				},
-				{
-					title: 'Go Space :)',
-					description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-					start: '2023-12-27',
-					end: '2023-12-27',
-					className: 'fc-bg-default',
-					icon : "rocket"
-				},
-				{
-					title: 'Dentist',
-					description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eu pellentesque nibh. In nisl nulla, convallis ac nulla eget, pellentesque pellentesque magna.',
-					start: '2023-12-29T11:30:00',
-					end: '2023-12-29T012:30:00',
-					className: 'fc-bg-blue',
-					icon : "medkit",
-					allDay: false
-				}
-			],
+			events: conveted_quotes,
 			eventRender: function(event, element) {
 				if(event.icon){
 					element.find(".fc-title").prepend("<i class='fa fa-"+event.icon+"'></i>");
@@ -440,16 +387,41 @@
 				jQuery('#modal-view-event-add').modal();
 			},
 			eventClick: function(event, jsEvent, view) {
+        if(event.icon){
 			        jQuery('.event-icon').html("<i class='fa fa-"+event.icon+"'></i>");
+            }
 					jQuery('.event-title').html(event.title);
 					jQuery('.event-body').html(event.description);
-					jQuery('.eventUrl').attr('href',event.url);
 					jQuery('#modal-view-event').modal();
 			},
 		})
+    hideSpinnerAndUnblur();
+
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          hideSpinnerAndUnblur();
+      });
+
+
+  function convertToFullCalendarEvents(data) {
+    return data.map(function(event) {
+        return {
+            title: event.event_title || event.quote.quote_title || 'No Title',
+            start: event.scheduled_start_date_and_time,
+            end: event.scheduled_end_date_and_time,
+            // icon: 'calendar', // or any icon you want to use
+            event_title: event.event_title || event.quote.quote_title,
+            notes: event.notes,
+            allDay: event.all_day
+        };
+    });
+}
+
+
+
 	});
   
-})(jQuery);
 
 </script>
 {% endblock %}

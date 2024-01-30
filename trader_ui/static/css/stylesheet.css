@@ -401,7 +401,36 @@ bottom: 0;
 .fc-row .fc-highlight-skeleton table {
 height: 100%;
 /* stretch skeleton to bottom of row */ }
+/* Base styles for larger screens */
+.fc button {
+  padding: 0.5em 1em; /* Adjust padding as needed */
+  font-size: 1em; /* Adjust font-size as needed */
+}
 
+/* Mobile responsive styles */
+@media (max-width: 568px) { /* Adjust the max-width as needed for your breakpoint */
+  .fc button {
+    padding: 0.25em 0.5em!important; /* Smaller padding for mobile */
+    font-size: 0.8em!important; /* Smaller font-size for mobile */
+  }
+  .fc .btn-group {
+    display: flex!important;
+    flex-direction: column!important; /* Stack buttons vertically on small screens */
+  }
+  .fc .btn {
+    margin-bottom: 5px!important; /* Add space between stacked buttons */
+  }
+}
+@media (max-width: 767px) { /* Adjust the max-width as needed for your breakpoint */
+
+  .fc .btn-group {
+    display: flex!important;
+    flex-direction: column!important; /* Stack buttons vertically on small screens */
+  }
+  .fc .btn {
+    margin-bottom: 5px!important; /* Add space between stacked buttons */
+  }
+}
 .fc-row .fc-highlight-skeleton td,
 .fc-row .fc-bgevent-skeleton td {
 border-color: transparent; }
@@ -433,7 +462,7 @@ z-index: 5; }
 background: none;
 /* in case <td>s are globally styled */
 border-color: transparent;
-padding: .5rem .5rem;
+padding: 0.2rem 0.1rem;
 }
 
 .fc-row .fc-content-skeleton td,
@@ -492,7 +521,6 @@ position: relative;
   width: 50px;
   height: 100%;
   border-left: 3px solid #5d5386;
-  border-bottom: 3px solid #5d5386;
   -webkit-border-radius: 3px 0px 0px 3px;
   -moz-border-radius: 3px 0px 0px 3px;
   border-radius: 3px 0px 0px 3px;
@@ -937,9 +965,10 @@ border-color: inherit; }
 .fc-bootstrap4 .fc-today.alert {
 border-radius: 0; }
 
-.fc-bootstrap4 a.fc-event:not([href]):not([tabindex]) {
-color: #5d5386; }
 
+.fc-day-grid-event {
+  border-bottom: 3px solid #5d5386;
+}
 
 /* TimeGrid Slats (lines that run horizontally)
 --------------------------------------------------------------------------------------------------*/
@@ -1225,7 +1254,7 @@ right: 0;
 --------------------------------------------------------------------------------------------------*/
 .fc-ltr .fc-time-grid .fc-event-container {
 /* space on the sides of events for LTR (default) */
-margin: 0 2.5% 0 2px; }
+margin: 0 2.5% 0 20px; }
 
 .fc-rtl .fc-time-grid .fc-event-container {
 /* space on the sides of events for RTL */
