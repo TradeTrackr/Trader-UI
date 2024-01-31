@@ -34,4 +34,4 @@ class TraderAccountApi():
             headers=headers
         )
 
-        return json.loads(resp.text)
+        return resp.text

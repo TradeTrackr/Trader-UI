@@ -78,3 +78,18 @@ class QuotesAPI():
             headers=headers,
         )
         return resp.text
+
+    def update_event(self, params, id):
+
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {session['access_token']}"
+        }
+        params = dict(params)
+
+        resp = requests.post(
+            Config.QUOTES_API_ENDPOINT + f"/event/update/{id}",
+            data=json.dumps(params),
+            headers=headers,
+        )
+        return resp.text

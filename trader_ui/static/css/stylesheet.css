@@ -520,7 +520,6 @@ position: relative;
   bottom: -2px;
   width: 50px;
   height: 100%;
-  border-left: 3px solid #5d5386;
   -webkit-border-radius: 3px 0px 0px 3px;
   -moz-border-radius: 3px 0px 0px 3px;
   border-radius: 3px 0px 0px 3px;
@@ -966,9 +965,6 @@ border-color: inherit; }
 border-radius: 0; }
 
 
-.fc-day-grid-event {
-  border-bottom: 3px solid #5d5386;
-}
 
 /* TimeGrid Slats (lines that run horizontally)
 --------------------------------------------------------------------------------------------------*/

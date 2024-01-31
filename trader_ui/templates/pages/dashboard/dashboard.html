@@ -150,299 +150,288 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.en.js"></script>
 
 <script>
-  
-  // Assuming enquiries_list is passed to the template as a JSON string
-  const enquiriesList = {{ enquiries_list | tojson | safe }};
-  const loadingSpinner = document.getElementById('loadingSpinner');
-  var jsonDataCategories = {{ categories | tojson }};
+  // Global variables
+const loadingSpinner = document.getElementById('loadingSpinner');
+let categories_list = [];
+let get_quotes = [];
 
-  document.addEventListener('DOMContentLoaded', function() {
-
-
-    var allDayCheckbox = document.getElementById('allDayCheckbox');
-    var datetimePickerEnd = document.getElementById('datetimePickerEnd');
-
-    allDayCheckbox.addEventListener('change', function () {
-      datetimePickerEnd.disabled = this.checked;
-    });
-    
-
-    if (! jsonDataCategories == []) {
-        var selectBox = document.getElementById('category_box'); // Replace 'select_box' with your select element's ID
-        jsonDataCategories['categories'].forEach(function(category) {
-
-            var option = document.createElement('option');
-            option.value = category.id;
-            option.text = category.category;
-            selectBox.appendChild(option);
-        });
-              
-      }
-
-      populateTable();
-      attachSortHandlers();
-      var dashboardTab = document.getElementById('dashboard-tab');
-
-      // Add the 'active' class to this element
-      dashboardTab.classList.add('active');
-  
-      document.querySelectorAll('.read-more-link').forEach(link => {
-        link.addEventListener('click', function(event) {
-        event.preventDefault();
-        let cell = this.parentElement;
-        let fullText = this.nextElementSibling;
-        let shortText = cell.querySelector('.short-text');
-        shortText.style.display = 'none';
-        let hideLink = cell.querySelector('.hide-text');
-        hideLink.style.display = 'inline';
-        fullText.style.display = 'block';
-        this.style.display = 'none';
-        cell.classList.add('wide-column');
-      });
-  });
-
-  document.querySelectorAll('.hide-text').forEach(link => {
-  link.addEventListener('click', function(event) {
-    event.preventDefault();
-
-    // Use closest to find the nearest parent td
-    let cell = this.parentElement;
-    let shortText = cell.querySelector('.short-text');
-    let fullText = cell.querySelector('.full-text');
-    let readMoreLink = cell.querySelector('.read-more-link');
-
-    shortText.style.display = 'block';
-    fullText.style.display = 'none';
-    this.style.display = 'none';
-    readMoreLink.style.display = 'inline';
-    cell.classList.remove('wide-column'); // This should now work correctly
-  });
+// Document ready function
+$(document).ready(function() {
+  showSpinnerAndBlur();
+  fetchCategories();
+  fetchQuotes();
+  initializeEventListeners();
 });
 
-
-});
-
-  function populateTable() {
-      let tableBody = document.getElementById('enquiries-table');
-      tableBody.innerHTML = ''; // Clear existing table rows
-
-      enquiriesList.forEach((enquiry) => {
-          let formattedTimestamp = formatDate(enquiry.timestamp);
-
-          var shorter_info = enquiry.additional_information
-          var td_text = ''
-          if (shorter_info.length > 20) {
-            var shorter_info = shorter_info.slice(0, 20);
-            var td_text =  `
-
-                          <td >
-                <span class="short-text"> ${shorter_info}</span>
-                <a href="#" class="read-more-link">Read More</a>
-                <span class="full-text" style="display:none;">  ${enquiry.additional_information} - ${enquiry.postcode}</span>
-                <a href="#" class="hide-text" style="display: none;">Hide</a>
-
-              </td>
-             
-            `
-          }else{
-            var td_text =  `
-                          <td>
-                <span class="short-text"> ${enquiry.additional_information}</span>
-              </td>
-             
-            `
-          }
-          let row = `<tr>
-              <td>${enquiry.full_name}</td>
-              <td>${enquiry.phone_number}</td>
-            
-              ${td_text}
-              <td>${formattedTimestamp}</td>
-              <td> <span class="badge badge-success rounded-pill">New</span></td>
-              <td>
-                <a href="./client/enquiry/${enquiry.id}">  <button type="button" class="btn btn-link btn-sm btn-rounded" onclick="showSpinnerAndBlur()">
-          View
-        </button></a>
-                
-            </td>
-
-          </tr>`;
-          tableBody.innerHTML += row; // Append each row to the table body
-      });
-  }
-
-  // Function to format date
-  function formatDate(dateString) {
-      const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false };
-      const date = new Date(dateString);
-      return new Intl.DateTimeFormat('default', options).format(date).replace(/\//g, '-').replace(',', '');
-  }
-
-
-  function hideSpinnerAndUnblur() {
-    var loadingSpinner = document.getElementById('loadingSpinner');
-
-    loadingSpinner.style.display = 'none';
-}
-
-
-  function showSpinnerAndBlur() {
-        var loadingSpinner = document.getElementById('loadingSpinner');
-
-        loadingSpinner.style.display = 'flex';
-    }
-
-  function attachSortHandlers() {
-      // Get all headers
-      const headers = document.querySelectorAll('th');
-      headers.forEach((header, index) => {
-          header.addEventListener('click', () => {
-              sortColumn(index);
-          });
-      });
-  }
-
-  function sortColumn(columnIndex) {
-      const tableBody = document.getElementById('enquiries-table');
-      let rows = Array.from(tableBody.getElementsByTagName('tr'));
-
-      // Determine if ascending or descending
-      const direction = tableBody.getAttribute('data-sort-dir') === 'asc' ? -1 : 1;
-      // Toggle the direction
-      tableBody.setAttribute('data-sort-dir', direction === 1 ? 'asc' : 'desc');
-
-      // Sort rows
-      rows.sort((a, b) => {
-          const aText = a.cells[columnIndex].innerText.toLowerCase();
-          const bText = b.cells[columnIndex].innerText.toLowerCase();
-
-          return aText.localeCompare(bText) * direction;
-      });
-
-      // Re-add the sorted rows to the table
-      rows.forEach(row => tableBody.appendChild(row));
-  }
-  jQuery(document).ready(function(){
-  jQuery('.datetimepicker').datepicker({
-      timepicker: true,
-      language: 'en',
-      range: true,
-      multipleDates: true,
-		  multipleDatesSeparator: " - "
-    });
-  jQuery("#add-event").submit(function(){
-      alert("Submitted");
-      var values = {};
-      $.each($('#add-event').serializeArray(), function(i, field) {
-          values[field.name] = field.value;
-      });
-      console.log(
-        values
-      );
-  });
-});
-get_quotes=[]
-
-$(document).ready(function() { 
-  showSpinnerAndBlur()
-  fetch('./dashboard/get_quotes', {
+// Fetch Categories from the server
+function fetchCategories() {
+  fetch('./dashboard/get_categories', {
           method: 'GET',
       })
       .then(response => response.json())
       .then(data => {
-        get_quotes=data['quotes']
-        var conveted_quotes = convertToFullCalendarEvents(get_quotes);
-
-		// page is ready
-		jQuery('#calendar').fullCalendar({
-			themeSystem: 'bootstrap4',
-			// emphasizes business hours
-			businessHours: false,
-			defaultView: 'agendaWeek',
-      timeFormat: 'h:mma',
-			// event dragging & resizing
-			editable: true,
-			// header
-			header: {
-				left: 'title',
-				center: 'month,agendaWeek,agendaDay',
-				right: 'today prev,next'
-			},
-			events: conveted_quotes,
-			eventRender: function(event, element) {
-				if(event.icon){
-					element.find(".fc-title").prepend("<i class='fa fa-"+event.icon+"'></i>");
-				}
-			  },
-			dayClick: function() {
-				jQuery('#modal-view-event-add').modal();
-			},
-			eventClick: function(event, jsEvent, view) {
-        if(event.icon){
-			        jQuery('.event-icon').html("<i class='fa fa-"+event.icon+"'></i>");
-            }
-					jQuery('.event-title').html(event.title);
-					jQuery('.event-body').html(event.description);
-					jQuery('#modal-view-event').modal();
-			},
-		})
-    hideSpinnerAndUnblur();
+        categories_list = data['categories']
+        populateCategorySelect();
 
       })
       .catch(error => {
           console.error('Error:', error);
-          hideSpinnerAndUnblur();
       });
+}
 
+// Populate Category Select box
+function populateCategorySelect() {
+  if (categories_list.length > 0) {
+    const selectBox = document.getElementById('category_box');
+    categories_list.forEach(function(category) {
+      const option = new Option(category.category, category.id);
+      selectBox.add(option);
+    });
+  }
+}
 
-      function convertToFullCalendarEvents(data) {
-    return data.map(function(event) {
-        return {
-            title: event.event_title ?? event?.quote?.quote_title ?? 'No Title',
-            start: event.scheduled_start_date_and_time ?? null,
-            end: event.scheduled_end_date_and_time ?? null,
-            event_title: event.event_title ?? event?.quote?.quote_title,
-            notes: event.notes ?? '',
-            allDay: event.all_day ?? false
-        };
+// Fetch Quotes and initialize FullCalendar
+function fetchQuotes() {
+  fetch('./dashboard/get_quotes', {
+    method: 'GET',
+  })
+  .then(response => response.json())
+  .then(data => {
+    get_quotes = data['quotes'];
+    const converted_quotes = convertToFullCalendarEvents(get_quotes, categories_list);
+    initializeFullCalendar(converted_quotes);
+    hideSpinnerAndUnblur();
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    hideSpinnerAndUnblur();
+  });
+}
+
+// Initialize FullCalendar with events
+function initializeFullCalendar(events) {
+  $('#calendar').fullCalendar({
+    themeSystem: 'bootstrap4',
+    businessHours: false,
+    defaultView: 'agendaWeek',
+    timeFormat: 'h:mma',
+    editable: true,
+    header: {
+      left: 'title',
+      center: 'month,agendaWeek,agendaDay',
+      right: 'today prev,next'
+    },
+    events: events,
+    eventRender: function(event, element) {
+      if (event.icon) {
+        element.find(".fc-title").prepend("<i class='fa fa-" + event.icon + "'></i>");
+      }
+      element.css({
+        'border': '1px solid #eeeeee',
+        'border-left': '3px solid ' + event.borderColor,
+        'border-bottom': '3px solid ' + event.borderColor
+      });
+    },
+    eventDrop: function(event, delta, revertFunc, jsEvent, ui, view) {
+    let newStart = event.start.format();
+    let newEnd = (event.end == null) ? null : event.end.format();
+
+    if (event.allDay) {
+      newStart = event.start.format('YYYY-MM-DD');
+      newEnd = (event.end == null) ? null : event.end.subtract(1, 'days').format('YYYY-MM-DD');
+      // If the event end is null, it means the event ends on the same day
+    }
+
+    if (!confirm("Are you sure about this change?")) {
+      revertFunc();
+    } else {
+      updateEventInDatabase(event.id, newStart, newEnd, event.allDay);
+    }
+  },
+    dayClick: function() {
+      $('#modal-view-event-add').modal();
+    },
+    eventClick: function(event, jsEvent, view) {
+      if (event.icon) {
+        $('.event-icon').html("<i class='fa fa-" + event.icon + "'></i>");
+      }
+      $('.event-title').html(event.title);
+      $('.event-body').html(event.description);
+      $('#modal-view-event').modal();
+    },
+  });
+}
+
+function updateEventInDatabase(eventId, newStart, newEnd, allDay) {
+  // Assuming you have a route and method to handle this on your server
+  fetch('/dashboard/update_event/'+ eventId, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      // Include other headers as required by your server
+    },
+    body: JSON.stringify({
+      scheduled_start_date_and_time: newStart,
+      scheduled_end_date_and_time: newEnd,
+      all_day: allDay
+    }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      window.location.reload();
+    } else {
+      // Handle failure, maybe revert the event position and show a message
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    // Handle errors here, like network issues
+  });
+}
+
+// Convert event data to FullCalendar format
+function convertToFullCalendarEvents(data, categories_list) {
+  return data.map(function(event) {
+    const category = categories_list.find(cat => cat.id === event.category_id);
+    const eventColor = category ? category.colour : '#5d5386';
+    return {
+      title: event.event_title ?? event?.quote?.quote_title ?? 'No Title',
+      start: event.scheduled_start_date_and_time ?? null,
+      end: event.scheduled_end_date_and_time ?? null,
+      id: event.id, 
+      event_title: event.event_title ?? event?.quote?.quote_title,
+      notes: event.notes ?? '',
+      allDay: event.all_day ?? false,
+      borderColor: eventColor
+    };
+  });
+}
+
+// Initialize other event listeners
+function initializeEventListeners() {
+  attachAllDayCheckboxHandler();
+  attachSortHandlers();
+  activateDashboardTab();
+  attachReadMoreHandlers();
+  attachHideTextHandlers();
+  initializeDateTimePickers();
+  attachNewQuoteFormSubmitHandler();
+}
+
+// Attach All-Day Checkbox Handler
+function attachAllDayCheckboxHandler() {
+  $('#allDayCheckbox').change(function () {
+    $('#datetimePickerEnd').prop('disabled', this.checked);
+  });
+}
+
+// Activate Dashboard Tab
+function activateDashboardTab() {
+  $('#dashboard-tab').addClass('active');
+}
+
+// Attach Read More Handlers
+function attachReadMoreHandlers() {
+  $('.read-more-link').click(function(event) {
+    event.preventDefault();
+    toggleReadMore(this);
+  });
+}
+
+function attachSortHandlers() {
+    // Get all headers
+    const headers = document.querySelectorAll('th');
+    headers.forEach((header, index) => {
+        header.addEventListener('click', () => {
+            sortColumn(index);
+        });
     });
 }
 
-
-	});
-  
-
-  document.getElementById('new-quote-form').addEventListener('submit', function(event) {
-      event.preventDefault(); // Prevents the default form submission
-  
-      // Add your spinner here
-      // For example, you could add a spinner element or class to a div
-  
-      // Gather form data
-      var formData = new FormData(this);
-  
-      // Perform the AJAX request
-      fetch('./dashboard/new_event', {
-          method: 'POST',
-          body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data)
-          // Handle response data
-          // Remove the spinner
-          // Optionally, you can check the response and decide whether to reload
-  
-          // Reload the page
-          window.location.reload();
-      })
-      .catch(error => {
-          console.error('Error:', error);
-          // Remove the spinner
-          // Handle the error
-      });
+// Attach Hide Text Handlers
+function attachHideTextHandlers() {
+  $('.hide-text').click(function(event) {
+    event.preventDefault();
+    toggleHideText(this);
   });
-  
+}
+
+// Initialize Date Time Pickers
+function initializeDateTimePickers() {
+  $('.datetimepicker').datepicker({
+    timepicker: true,
+    language: 'en',
+    range: true,
+    multipleDates: true,
+    multipleDatesSeparator: " - "
+  });
+}
+
+// Attach New Quote Form Submit Handler
+function attachNewQuoteFormSubmitHandler() {
+  $('#new-quote-form').submit(function(event) {
+    event.preventDefault();
+    showSpinnerAndBlur();
+    submitNewQuoteForm(new FormData(this));
+  });
+}
+
+// Submit New Quote Form
+function submitNewQuoteForm(formData) {
+  fetch('./dashboard/new_event', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    window.location.reload();
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    hideSpinnerAndUnblur();
+  });
+}
+
+// Toggle Read More Text
+function toggleReadMore(element) {
+  let cell = element.parentElement;
+  let fullText = element.nextElementSibling;
+  let shortText = cell.querySelector('.short-text');
+  shortText.style.display = 'none';
+  let hideLink = cell.querySelector('.hide-text');
+  hideLink.style.display = 'inline';
+  fullText.style.display = 'block';
+  element.style.display = 'none';
+  cell.classList.add('wide-column');
+}
+
+// Toggle Hide Text
+function toggleHideText(element) {
+  let cell = element.parentElement;
+  let shortText = cell.querySelector('.short-text');
+  let fullText = cell.querySelector('.full-text');
+  let readMoreLink = cell.querySelector('.read-more-link');
+  shortText.style.display = 'block';
+  fullText.style.display = 'none';
+  element.style.display = 'none';
+  readMoreLink.style.display = 'inline';
+  cell.classList.remove('wide-column');
+}
+
+// Show Spinner and Blur Content
+function showSpinnerAndBlur() {
+  loadingSpinner.style.display = 'flex';
+  // Additional content blur can be added here if needed
+}
+
+// Hide Spinner and Unblur Content
+function hideSpinnerAndUnblur() {
+  loadingSpinner.style.display = 'none';
+  // Remove content blur here if it was added in showSpinnerAndBlur()
+}
+ 
 </script>
 {% endblock %}
 
