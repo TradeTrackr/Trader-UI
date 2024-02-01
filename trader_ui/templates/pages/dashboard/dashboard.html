@@ -214,6 +214,7 @@ function initializeFullCalendar(events) {
     themeSystem: 'bootstrap4',
     businessHours: false,
     defaultView: 'agendaWeek',
+    defaultTimedEventDuration: '01:00:00', 
     timeFormat: 'h:mma',
     editable: true,
     header: {
@@ -233,13 +234,20 @@ function initializeFullCalendar(events) {
       });
     },
     eventDrop: function(event, delta, revertFunc, jsEvent, ui, view) {
-    let newStart = event.start.format();
-    let newEnd = (event.end == null) ? null : event.end.format();
 
-    if (event.allDay) {
-      newStart = event.start.format('YYYY-MM-DD');
-      newEnd = (event.end == null) ? null : event.end.subtract(1, 'days').format('YYYY-MM-DD');
-      // If the event end is null, it means the event ends on the same day
+    let dateFormat = event.allDay ? 'YYYY-MM-DDT00:00:00' : 'YYYY-MM-DDTHH:mm:ss';
+
+    let newStart = event.start.format(dateFormat);
+    newStart = newStart.replace('A', 'T');
+
+    let newEnd = event.end ? event.end.format(dateFormat) : null;
+
+    var defaultDuration = moment.duration($('#calendar').fullCalendar('option', 'defaultTimedEventDuration')); // get the default and convert it to proper type
+    newEnd = event.end || event.start.clone().add(defaultDuration); 
+
+    if (event.allDay && newEnd) {
+      newEnd = newEnd.format();
+      newEnd = newEnd.replace('A', 'T');
     }
 
     if (!confirm("Are you sure about this change?")) {
@@ -264,11 +272,11 @@ function initializeFullCalendar(events) {
 
 function updateEventInDatabase(eventId, newStart, newEnd, allDay) {
   // Assuming you have a route and method to handle this on your server
-  fetch('/dashboard/update_event/'+ eventId, {
+  
+  fetch('./dashboard/update_event/'+ eventId, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      // Include other headers as required by your server
+    "Content-type": "application/json; charset=UTF-8"
     },
     body: JSON.stringify({
       scheduled_start_date_and_time: newStart,

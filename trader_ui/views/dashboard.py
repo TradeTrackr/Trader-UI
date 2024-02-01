@@ -29,6 +29,7 @@ def get_quotes():
 @dashboard.route("/dashboard/new_event", methods=["POST"])
 def new_event():
     post_data = request.form
+
     new_quote = QuotesAPI().new_event(post_data)
 
     return new_quote
@@ -36,10 +37,11 @@ def new_event():
 
 @dashboard.route("/dashboard/update_event/<id>", methods=["POST"])
 def update_event(id):
-    post_data = request.form
+    post_data = request.get_json()
     print(post_data)
-    new_quote = QuotesAPI().update_event(post_data, id)
 
+    new_quote = QuotesAPI().update_event(post_data, id)
+    print(new_quote)
     return new_quote
 
 
@@ -47,4 +49,5 @@ def update_event(id):
 @authentication.token_required
 def get_categories():
     categories = TraderAccountApi().get_categories()
+    print(categories)
     return categories

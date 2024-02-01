@@ -85,9 +85,7 @@ class QuotesAPI():
             "Content-Type": "application/json",
             "Authorization": f"Bearer {session['access_token']}"
         }
-        params = dict(params)
-
-        resp = requests.post(
+        resp = requests.patch(
             Config.QUOTES_API_ENDPOINT + f"/event/update/{id}",
             data=json.dumps(params),
             headers=headers,
