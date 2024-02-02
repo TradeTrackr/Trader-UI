@@ -1250,7 +1250,7 @@ right: 0;
 --------------------------------------------------------------------------------------------------*/
 .fc-ltr .fc-time-grid .fc-event-container {
 /* space on the sides of events for LTR (default) */
-margin: 0 2.5% 0 20px; }
+margin: 0 2.5% 0 5px; }
 
 .fc-rtl .fc-time-grid .fc-event-container {
 /* space on the sides of events for RTL */
