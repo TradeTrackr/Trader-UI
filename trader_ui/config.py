@@ -1,6 +1,7 @@
 import os
 
 SECRET_KEY = os.environ["SECRET_KEY"]
+CDN_URL = os.environ['CDN_URL']
 
 class Config:
 
