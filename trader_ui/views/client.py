@@ -15,6 +15,9 @@ def enquiry(id):
     enquiry = EnquiryApi().get_enquiry_and_activity(id)
     categories = TraderAccountApi().get_categories()
     quotes = QuotesAPI().get_quotes(id)
+    print(quotes)
+    print(categories)
+    print(enquiry)
     return render_template("pages/client/enquiry.html",
                             error="none",
                             CDN_URL=Config.CDN_URL,
