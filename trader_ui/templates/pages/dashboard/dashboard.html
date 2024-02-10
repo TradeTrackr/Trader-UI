@@ -265,7 +265,7 @@ function initializeFullCalendar(events) {
         $('.event-icon').html("<i class='fa fa-" + event.icon + "'></i>");
       }
       $('.event-title').html(event.title);
-      $('.event-body').html(event.description);
+      $('.event-body').html('<p>'+event.notes+'</p><br><p>'+event.start+'</p><br><p>'+event.end+'</p>');
       $('#modal-view-event').modal();
     },
   });
