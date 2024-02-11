@@ -15,15 +15,15 @@ def enquiry(id):
     enquiry = EnquiryApi().get_enquiry_and_activity(id)
     categories = TraderAccountApi().get_categories()
     quotes = QuotesAPI().get_quotes(id)
-    print(quotes)
-    print(categories)
-    print(enquiry)
+
+    if enquiry != []:
+        enquiry=enquiry[0]
     return render_template("pages/client/enquiry.html",
                             error="none",
                             CDN_URL=Config.CDN_URL,
-                            categories=categories,
+                            categories=json.loads(categories),
                             quotes=quotes,
-                            enquiry=enquiry[0]
+                            enquiry=enquiry
                         )
 
 
