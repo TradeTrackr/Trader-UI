@@ -135,7 +135,24 @@
                 </div>
                 
 
-
+                <div class="modal fade" id="modal-view-event" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="eventModalLabel">Event Details</h5>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="event-icon"></div>
+                        <h4 class="event-title"></h4>
+                        <div class="event-body"></div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
   
       </section>
       
@@ -257,17 +274,21 @@ function initializeFullCalendar(events) {
       updateEventInDatabase(event.id, newStart, newEnd, event.allDay);
     }
   },
-    dayClick: function() {
+  dayClick: function() {
       $('#modal-view-event-add').modal();
     },
     eventClick: function(event, jsEvent, view) {
-      if (event.icon) {
-        $('.event-icon').html("<i class='fa fa-" + event.icon + "'></i>");
-      }
-      $('.event-title').html(event.title);
-      $('.event-body').html('<p>'+event.notes+'</p><br><p>'+event.start+'</p><br><p>'+event.end+'</p>');
-      $('#modal-view-event').modal();
-    },
+    if (event.icon) {
+      $('.event-icon').html("<i class='fa fa-" + event.icon + "'></i>");
+    }
+    // Format dates using Moment.js
+    var formattedStart = moment(event.start).format('YYYY-MM-DD HH:mm:ss');
+    var formattedEnd = event.end ? moment(event.end).format('YYYY-MM-DD HH:mm:ss') : 'Not set';
+
+    $('.event-title').html(event.title);
+    $('.event-body').html('<p>'+event.notes+'</p><br><p>Start: '+formattedStart+'</p><br><p>End: '+formattedEnd+'</p>');
+    $('#modal-view-event').modal();
+  },
   });
 }
 
