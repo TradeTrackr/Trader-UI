@@ -265,6 +265,7 @@ function populateCategorySelect() {
   }
 }
 
+
 // Fetch Quotes and initialize FullCalendar
 function fetchQuotes() {
   fetch('./dashboard/get_quotes', {
@@ -285,10 +286,29 @@ function fetchQuotes() {
 
 // Initialize FullCalendar with events
 function initializeFullCalendar(events) {
+
+  var isMobile = $(window).width() < 577;
+  var default_view = 'agendaWeek'
+  if (isMobile) {
+    // Adjust the calendar settings for mobile
+    default_view = 'agendaDay'
+  } else {
+    // Adjust the calendar settings for a full-screen browser
+    default_view = 'agendaWeek'
+  }
+
   $('#calendar').fullCalendar({
     themeSystem: 'bootstrap4',
     businessHours: false,
-    defaultView: 'agendaWeek',
+    defaultView: default_view,
+    contentHeight: ()=>{
+      console.log(screen.width);
+      if(isMobile) {
+            return 600
+        } else {
+            return 800
+        }
+      },
     defaultTimedEventDuration: '01:00:00', 
     timeFormat: 'h:mma',
     scrollTime: '06:00:00',
