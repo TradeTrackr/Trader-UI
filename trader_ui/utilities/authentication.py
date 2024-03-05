@@ -41,6 +41,14 @@ def check_enquiry_accounts(f):
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
+
+        if 'role' in session:
+            if session['role'] != 'trader':
+                return redirect("./login")
+        else:
+            return redirect("./login")
+
+
         if 'access_token' not in session or 'refresh_token' not in session:
             session.clear()
             return redirect("./login")

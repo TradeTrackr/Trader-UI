@@ -171,14 +171,72 @@
 const loadingSpinner = document.getElementById('loadingSpinner');
 let categories_list = [];
 let get_quotes = [];
+const enquiriesList = {{ enquiries_list | tojson | safe }};
 
 // Document ready function
 $(document).ready(function() {
   showSpinnerAndBlur();
   fetchCategories();
   fetchQuotes();
+  populateTable();
   initializeEventListeners();
 });
+
+
+function populateTable() {
+      let tableBody = document.getElementById('enquiries-table');
+      tableBody.innerHTML = ''; // Clear existing table rows
+
+      enquiriesList.forEach((enquiry) => {
+          let formattedTimestamp = formatDate(enquiry.timestamp);
+
+          var shorter_info = enquiry.additional_information
+          var td_text = ''
+          if (shorter_info.length > 20) {
+            var shorter_info = shorter_info.slice(0, 20);
+            var td_text =  `
+
+                          <td >
+                <span class="short-text"> ${shorter_info}</span>
+                <a href="#" class="read-more-link">Read More</a>
+                <span class="full-text" style="display:none;">  ${enquiry.additional_information} - ${enquiry.postcode}</span>
+                <a href="#" class="hide-text" style="display: none;">Hide</a>
+
+              </td>
+             
+            `
+          }else{
+            var td_text =  `
+                          <td>
+                <span class="short-text"> ${enquiry.additional_information}</span>
+              </td>
+             
+            `
+          }
+          let row = `<tr>
+              <td>${enquiry.full_name}</td>
+              <td>${enquiry.phone_number}</td>
+            
+              ${td_text}
+              <td>${formattedTimestamp}</td>
+              <td> <span class="badge badge-success rounded-pill">New</span></td>
+              <td>
+                <a href="./client/enquiry/${enquiry.id}">  <button type="button" class="btn btn-link btn-sm btn-rounded" onclick="showSpinnerAndBlur()">
+          View
+        </button></a>
+                
+            </td>
+
+          </tr>`;
+          tableBody.innerHTML += row; // Append each row to the table body
+      });
+  }
+
+function formatDate(dateString) {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false };
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('default', options).format(date).replace(/\//g, '-').replace(',', '');
+}
 
 // Fetch Categories from the server
 function fetchCategories() {

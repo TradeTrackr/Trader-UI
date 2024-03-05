@@ -27,8 +27,7 @@ class TraderAccountApi():
             "Content-Type": "application/json",
             "Authorization": f"Bearer {session['access_token']}"
         }
-        print(headers)
-        print(Config.ACCOUNT_API_ENDPOINT + f"/category/get_categories/{session['id']}")
+
         resp = requests.get(
             Config.ACCOUNT_API_ENDPOINT + f"/category/get_categories/{session['id']}",
             headers=headers

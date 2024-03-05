@@ -32,7 +32,7 @@ def new_pass(email, random):
                 random=random,
                 CDN_URL=Config.CDN_URL
         )
-                
+
     elif request.method == "POST":
         return LoginManager.set_new_pass(email.lower(), random)
 
@@ -49,8 +49,12 @@ class LoginManager:
 
     @staticmethod
     def display_login_page():
-        session["next"] = request.args.get("next", "/")
+        next = request.args.get("next", "/")
+        session['next'] = next
+
         if session.get("keep_me_logged_in_company") == "logged_in":
+            if next != '/':
+                return redirect(next)
             return redirect("./home")
         return render_template("pages/login/display_logins.html", error="none", CDN_URL=Config.CDN_URL)
 
@@ -63,7 +67,7 @@ class LoginManager:
         payload["password"] = post_data.get("password")
 
         json_data = LoginApi().verify_login(payload)
-        if "detail" in json_data:        
+        if "detail" in json_data:
             if json_data["detail"] == "Incorrect email or password":
                 return jsonify({"result":"error-password-username"})
 
@@ -71,13 +75,16 @@ class LoginManager:
             if post_data["keep_me_logged_in"] == "true":
                 session["keep_me_logged_in_company"] = "logged_in"
                 session.permanent = True
-        
+
         session["id"] = json_data.get('id')
         session["access_token"] = json_data.get('access_token')
         session["refresh_token"] = json_data.get("refresh_token")
+        session["role"] = 'trader'
         session["cookie_policy"] = "yes"
         session["error"] = ""
 
+        if session['next'] != '/':
+            return redirect(session['next'])
         return jsonify({"result": "OK"})
 
     @staticmethod
@@ -94,9 +101,9 @@ class LoginManager:
         payload["password"] = request.form["password"]
         payload["email"] = email.lower()
         payload["code"] = random
-        
+
         json_data = LoginApi().update_password(payload)
-        
+
         # code u001 has been specified to be an incorrect email and password combination so we should check for this
         if "detail" in json_data:
             if json_data["detail"] == "Not Found":
